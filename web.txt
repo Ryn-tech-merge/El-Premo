@@ -1,0 +1,45 @@
+ bannars (all)
+
+ category (all) -> subcategory (all)
+
+area (all)
+
+pops(all)
+
+coupon (all)
+
+nationality (view - delete - new)
+
+cambain (delete)
+
+notifications (all)
+
+free (all) -> free image (all)
+
+special order (view - update status - delete)
+
+orders (view - delete - filter - sort - status - print - excel)
+
+users (view - update status - delete - filter - search)-> wallet ->orders
+
+info
+
+################################################
+
+
+
+
+statistics
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,95 @@
+public function cancel_order_admin(Request $req){
+        $order = order::find($req->id);
+        $order->status = 11;
+        $order->des = $req->des;
+        if($order->free_id!=null){
+            offer::where('free_id',$order->free_id)->update(['status'=>1]);
+            $free = freelance::find($order->free_id);
+            $free->status = 0;
+            $free->save();
+        }
+        if($order->coupon_price!=null){
+            $coupon = coupon::where('coupon',$order->coupon)->first();
+            if($coupon){
+                if($coupon->users!=null){
+                    $array = $coupon->users;
+                    if (($key = array_search($order->coupon, $array)) !== false) {
+                        unset($array[$key]);
+                    }
+                    $coupon->users = json_encode($array);
+                }else{
+                   
+                }
+                $coupon->save();
+            }
+        }
+        if($order->free_id!=null){
+            $tokens = freelance::where('id',$order->free_id)->pluck('token')->toArray();
+        $this->noti11($tokens,$order->id,0,0);
+        }
+        if($order->payment==2){
+            $user = user::find($order->user_id);
+            $pending = round(($user->pending-$order->total),2);
+            $balance = round(($user->balance+$order->total),2);
+            $user->pending = $pending;
+            $user->balance = $balance;
+            $user->save();
+            $order->save();
+            $tokens = user::where('id',$order->user_id)->pluck('token')->toArray();
+            event(new NewOrder($order->category_id,$order->id,4,$order));
+            $this->noti11($tokens,$order->id,$pending,$balance);
+            return response()->json([
+                "status"=>1,
+                "pending"=>$pending,
+                "balance"=>$balance,
+            ]);
+        }else{
+            $tokens = user::where('id',$order->user_id)->pluck('token')->toArray();
+            $this->noti11($tokens,$order->id,0,0);
+            event(new NewOrder($order->category_id,$order->id,4,$order));
+            $order->save();
+            return response()->json([
+                "status"=>1,
+            ]);
+        }
+        
+        
+
+    }
+
+
+
+public function noti11($tokens,$id,$pending,$balance){
+        $SERVER_API_KEY = 'AAAAfAtFi4c:APA91bFTipaRT-59dRz47vamPkGs7VC0noQIBeQLUmirbnuhlUKl1_nyI7YT868NnI4nStJYf6bWatN0WVs81oUxHFBK94ABEdQ1aVQTTJ9n3tdHCaVDejlJFabfnmJKU-Nk9F8xdTxh';
+        $data = [
+        "registration_ids" => $tokens,
+        "notification" => [
+        "title" => 'تم الغاء الطلب من قبل الادارة',
+        "body" => 'Order Canceld From Admin',
+        "sound"=> "default" // required for sound on ios
+        ],
+        "data" => [
+            "title_en" => 'Order Canceld From Admin',
+            "title_ar" => 'تم الغاء الطلب من قبل الادارة',
+            "body_en" => 'Order Canceld From Admin',
+            "body_ar" => 'تم الغاء الطلب من قبل الادارة',
+            "type"=>11,
+            "id"=>$id,
+            "pending"=>$pending,
+            "balance"=>$balance,
+        ],
+        ];
+        $dataString = json_encode($data);
+        $headers = [
+        'Authorization: key=' . $SERVER_API_KEY,
+        'Content-Type: application/json',
+        ];
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
+        $response = curl_exec($ch);
+    }

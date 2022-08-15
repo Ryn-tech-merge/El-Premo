@@ -1,0 +1,163 @@
+<!-- JQUERY JS -->
+<script src="{{url('admin')}}/assets/js/jquery-3.4.1.min.js"></script>
+
+<!-- BOOTSTRAP JS -->
+<script src="{{url('admin')}}/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="{{url('admin')}}/assets/plugins/bootstrap/js/popper.min.js"></script>
+
+<!-- SPARKLINE JS-->
+<script src="{{url('admin')}}/assets/js/jquery.sparkline.min.js"></script>
+
+<!-- CHART-CIRCLE JS-->
+<script src="{{url('admin')}}/assets/js/circle-progress.min.js"></script>
+
+<!-- RATING STARJS -->
+<script src="{{url('admin')}}/assets/plugins/rating/jquery.rating-stars.js"></script>
+
+<!-- EVA-ICONS JS -->
+<script src="{{url('admin')}}/assets/iconfonts/eva.min.js"></script>
+
+<!-- INPUT MASK JS-->
+<script src="{{url('admin')}}/assets/plugins/input-mask/jquery.mask.min.js"></script>
+
+<!-- SIDE-MENU JS-->
+<script src="{{url('admin')}}/assets/plugins/sidemenu/sidemenu.js"></script>
+
+<!-- PERFECT SCROLL BAR js-->
+<script src="{{url('admin')}}/assets/plugins/p-scroll/perfect-scrollbar.min.js"></script>
+<script src="{{url('admin')}}/assets/plugins/sidemenu/sidemenu-scroll-rtl.js"></script>
+
+<!-- CUSTOM SCROLLBAR JS-->
+<script src="{{url('admin')}}/assets/plugins/scroll-bar/jquery.mCustomScrollbar.concat.min.js"></script>
+
+<!-- INTERNAL CHARTJS CHART JS -->
+<script src="{{url('admin')}}/assets/plugins/chart/Chart.bundle.js"></script>
+<script src="{{url('admin')}}/assets/plugins/chart/utils.js"></script>
+
+<!-- INTERNAL PIETY CHART JS -->
+<script src="{{url('admin')}}/assets/plugins/peitychart/jquery.peity.min.js"></script>
+<script src="{{url('admin')}}/assets/plugins/peitychart/peitychart.init.js"></script>
+<!-- INTERNAL APEXCHART JS -->
+<script src="{{url('admin')}}/assets/js/apexcharts.js"></script>
+
+<!--INTERNAL  INDEX JS -->
+<script src="{{url('admin')}}/assets/js/index1.js"></script>
+<!-- SIDEBAR JS -->
+<script src="{{url('admin')}}/assets/plugins/sidebar/sidebar-rtl.js"></script>
+
+<!-- CUSTOM JS -->
+<script src="{{url('admin')}}/assets/js/custom.js"></script>
+
+<!-- Swicther JS -->
+<script src="{{url('admin')}}/assets/switcher/js/switcher-rtl.js"></script>
+
+
+{{--=================  dropfy  ================--}}
+<script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.0.18/sweetalert2.min.js"></script>
+@stack('admin_js')
+
+{{--//===========================    data table  =========================--}}
+
+<!-- INTERNAL  DATA TABLE JS-->
+<script src="{{url('admin')}}/assets/plugins/datatable/jquery.dataTables.min.js"></script>
+<script src="{{url('admin')}}/assets/plugins/datatable/dataTables.bootstrap4.min.js"></script>
+<script src="{{url('admin')}}/assets/plugins/datatable/datatable.js"></script>
+<script src="{{url('admin')}}/assets/plugins/datatable/dataTables.responsive.min.js"></script>
+<script src="{{url('admin')}}/assets/plugins/datatable/fileexport/dataTables.buttons.min.js"></script>
+<script src="{{url('admin')}}/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js"></script>
+<script src="{{url('admin')}}/assets/plugins/datatable/fileexport/jszip.min.js"></script>
+<script src="{{url('admin')}}/assets/plugins/datatable/fileexport/pdfmake.min.js"></script>
+<script src="{{url('admin')}}/assets/plugins/datatable/fileexport/vfs_fonts.js"></script>
+<script src="{{url('admin')}}/assets/plugins/datatable/fileexport/buttons.html5.min.js"></script>
+<script src="{{url('admin')}}/assets/plugins/datatable/fileexport/buttons.print.min.js"></script>
+<script src="{{url('admin')}}/assets/plugins/datatable/fileexport/buttons.colVis.min.js"></script>
+<!-- SIDEBAR JS -->
+
+{{--//===========================    delete element  =========================--}}
+
+<script>
+    $(document).on('click','.delete_element',function (e) {
+        var id = $(this).attr('data_id')
+        var td = $('#users-table');
+        var routeAction = $(this).attr('data_delete')
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: 'هل انت متأكد من الحذف ؟',
+            text: "سيتم حذف المحدد!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'حذف !',
+            cancelButtonText: 'الغاء !',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',
+                    url: routeAction,
+                    data: {'id':id},
+                    success:function(data){
+                        // td.parent().parent().parent().parent().remove();
+                        swalWithBootstrapButtons.fire(
+                            'تم الحذف !',
+                            'تم حذف العنصر بنجاح .',
+                            'info'
+                        )
+                        td.DataTable().ajax.reload();
+                    }
+                });
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'تم الغاء الحذف ',
+                    'العنصر المحدد موجود بامان ',
+                    'error'
+                )
+            }
+        });
+    })
+</script>
+
+<script>
+    jQuery('.numbersOnly').keyup(function () {
+        this.value = this.value.replace(/[^0-9\.]/g,'');
+    });
+</script>
+
+{{--=================== default toster ==============================--}}
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+@include('layouts.admin.inc.toaster')
+
+{{--=================== tooltip ==============================--}}
+{{--<script type="text/javascript" src="https://unpkg.com/@popperjs/core@2"></script>--}}
+{{--<script>--}}
+{{--    $(function () {--}}
+{{--        $('[data-toggle="tooltip"]').tooltip()--}}
+{{--    })--}}
+{{--    $('.btn').tooltip('show')--}}
+
+{{--</script>--}}
+
+
+
+
+
+
+

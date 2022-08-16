@@ -44,6 +44,24 @@ Route::group(['prefix' => 'admin'], function () {
         ################################### contacts ##########################################
         Route::resource('contacts','ContactController');
 
+        ################################### settings ##########################################
+        Route::resource('settings','SettingController');
+
+        ################################### sliders ##########################################
+        Route::resource('sliders','SliderController');
+        ################################### units ##########################################
+        Route::resource('units','UnitController');
+
+        ################################### products ##########################################
+        Route::resource('products','ProductController');
+        Route::get('get_category_brands','ProductController@get_category_brands')->name('get_category_brands');
+
+        ################################### offers ##########################################
+        Route::resource('offers','OfferController');
+
+        ################################### orders ##########################################
+        Route::resource('orders','OrderController');
+
 
     });//end Middleware Admin
 

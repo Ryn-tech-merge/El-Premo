@@ -20,7 +20,7 @@
                             <thead class="bg-primary text-white">
                             <tr>
                                 <th class="text-white">#</th>
-                                <th class="text-white">القسم</th>
+{{--                                <th class="text-white">القسم</th>--}}
                                 <th class="text-white">الاسم</th>
                                 <th class="text-white">الصورة</th>
                                 <th class="text-white">تحكم</th>
@@ -90,7 +90,7 @@
     <script>
         var  columns =[
             {data: 'id', name: 'id'},
-            {data: 'category', name: 'category'},
+            // {data: 'category', name: 'category'},
             {data: 'name', name: 'name'},
             {data: 'image', name: 'image'},
             {data: 'action', name: 'action', orderable: false, searchable: false},

@@ -136,7 +136,7 @@
 </script>
 
 <script>
-    jQuery('.numbersOnly').keyup(function () {
+    $(document).on('keyup','.numbersOnly',function () {
         this.value = this.value.replace(/[^0-9\.]/g,'');
     });
 </script>

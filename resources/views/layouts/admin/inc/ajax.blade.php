@@ -92,9 +92,9 @@
 
 // $('#product-model').modal('hide')
                     if (data.success === 'true') {
-                        my_toaster(data.message)
                         // alert(1)
                         $('#Modal').modal('hide')
+                        my_toaster(data.message)
                         $('#exportexample').DataTable().ajax.reload(null, false);
                     }else {
                         var messages = Object.values(data.messages);

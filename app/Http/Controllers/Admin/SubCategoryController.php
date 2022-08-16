@@ -17,7 +17,7 @@ class SubCategoryController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $sub_categorys = Brand::with('category')->latest()->get();
+            $sub_categorys = Brand::/*with('category')->*/latest()->get();
             return Datatables::of($sub_categorys)
                 ->addColumn('action', function ($sub_category) {
                     return '
@@ -36,9 +36,9 @@ class SubCategoryController extends Controller
                 ->editColumn('image',function ($sub_category){
                     return '<img alt="image" class="img list-thumbnail border-0" style="width:100px" onclick="window.open(this.src)" src="'.$sub_category->image.'">';
                 })
-                ->addColumn('category',function ($sub_category){
-                    return $sub_category->category->name ?? 'قسم محذوف';
-                })
+//                ->addColumn('category',function ($sub_category){
+//                    return $sub_category->category->name ?? 'قسم محذوف';
+//                })
                 ->escapeColumns([])
                 ->make(true);
         }
@@ -50,8 +50,8 @@ class SubCategoryController extends Controller
     ################ Add sub_category #################
     public function create()
     {
-        $categories = Category::all();
-        return view('Admin.SubCategory.parts.create',compact('categories'))->render();
+//        $categories = Category::all();
+        return view('Admin.SubCategory.parts.create'/*,compact('categories')*/)->render();
 //        return response()->json('');
     }
 
@@ -59,12 +59,12 @@ class SubCategoryController extends Controller
     {
 //        return $request;
         $valedator = Validator::make($request->all(), [
-            'category_id' => 'required',
+//            'category_id' => 'required',
             'name' => 'required',
             'image' => 'required',
         ],
             [
-                'category_id.required' => 'القسم مطلوب',
+//                'category_id.required' => 'القسم مطلوب',
                 'name.required' => 'الاسم مطلوب',
                 'image.required' => ' الصورة مطلوبة',
             ]
@@ -88,20 +88,20 @@ class SubCategoryController extends Controller
     ################ Edit sub_category #################
     public function edit(Brand $sub_category)
     {
-        $categories = Category::all();
-        return view('Admin.SubCategory.parts.edit', compact('sub_category','categories'));
+//        $categories = Category::all();
+        return view('Admin.SubCategory.parts.edit', compact('sub_category'/*,'categories'*/));
     }
     ###############################################
     ################ update sub_category #################
     public function update(Request $request, Brand $sub_category)
     {
         $valedator = Validator::make($request->all(), [
-            'category_id' => 'required',
+//            'category_id' => 'required',
             'name' => 'required',
 //            'image' => 'required',
         ],
             [
-                'category_id.required' => 'القسم مطلوب',
+//                'category_id.required' => 'القسم مطلوب',
                 'name.required' => 'الاسم مطلوب',
 //                'image.required' => ' الصورة مطلوبة',
             ]

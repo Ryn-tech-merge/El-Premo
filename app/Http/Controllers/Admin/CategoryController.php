@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Brand;
+use App\Models\CategoryBrand;
 use App\Http\Traits\PhotoTrait;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
@@ -50,13 +52,14 @@ class CategoryController extends Controller
     ################ Add category #################
     public function create()
     {
-        return view('Admin.Category.parts.create')->render();
+        $brands = Brand::all();
+        return view('Admin.Category.parts.create',compact('brands'))->render();
 //        return response()->json('');
     }
 
     public function store(Request $request)
     {
-//        return $request;
+//        return count($request->brands) > 0;
         $valedator = Validator::make($request->all(), [
             'name' => 'required',
             'image' => 'required',
@@ -69,9 +72,22 @@ class CategoryController extends Controller
         if ($valedator->fails())
             return response()->json(['messages' => $valedator->errors()->getMessages(), 'success' => 'false']);
 
-        $data = $request->all();
+        $data = $request->except('brands');
         $data['image']    = 'uploads/categories/'.$this->saveImage($request->image,'uploads/categories');
-        Category::create($data);
+        $category = Category::create($data);
+//        return $category;
+//
+        if (count($request->brands) > 0){
+            foreach ($request['brands'] as $brand){
+//                return $brand;
+                CategoryBrand::create([
+                    'category_id'   => $category->id,
+                    'brand_id'      => $brand
+                ]) ;
+
+            }
+        }
+
 
         return response()->json(
             [
@@ -85,7 +101,10 @@ class CategoryController extends Controller
     ################ Edit category #################
     public function edit(Category $category)
     {
-        return view('Admin.Category.parts.edit', compact('category'));
+        $brands = Brand::all();
+        $brand_ids = $category->categoryBrands->pluck('brand_id')->toArray();
+//        return $brand_ids;
+        return view('Admin.Category.parts.edit', compact('category','brands','brand_ids'));
     }
     ###############################################
     ################ update category #################
@@ -103,7 +122,7 @@ class CategoryController extends Controller
         if ($valedator->fails())
             return response()->json(['messages' => $valedator->errors()->getMessages(), 'success' => 'false']);
 
-        $data = $request->all();
+        $data = $request->except('brands');
 
         if ( $request->image && $request->image != null ){
             if (file_exists($category->getAttributes()['image'])) {
@@ -113,6 +132,18 @@ class CategoryController extends Controller
 
         }
         $category->update($data);
+
+        if (count($request->brands) > 0){
+            CategoryBrand::where('category_id',$category['id'])->delete();
+            foreach ($request['brands'] as $brand){
+//                return $brand;
+                CategoryBrand::create([
+                    'category_id'   => $category->id,
+                    'brand_id'      => $brand
+                ]) ;
+
+            }
+        }
 
         return response()->json(
             [

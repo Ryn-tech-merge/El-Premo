@@ -5,7 +5,7 @@
         <div class="col-lg-12 col-xl-12 col-md-12 col-sm-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Edit Profile</h3>
+                    <h3 class="card-title">تعديل البروفايل</h3>
                 </div>
                 <div class="card-body">
                     <form  action="{{route('profile.update')}}" id="Form" method="post" enctype="multipart/form-data">
@@ -28,8 +28,8 @@
                         <input type="password" class="form-control" placeholder="*******">
                     </div>
                         <div class="card-footer ">
-                            <button type="submit" class="btn btn-success mt-1">حفظ</button>
-                            <button type="reset" class="btn btn-danger mt-1">الغاء</button>
+                            <input type="submit" class="btn btn-success mt-1" value="حفظ">
+                            <input type="reset" class="btn btn-danger mt-1" value="الغاء">
                         </div>
                     </form>
 

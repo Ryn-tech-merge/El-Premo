@@ -8,4 +8,10 @@ class Order extends Model
 {
     protected $guarded = [];
 
+    public function user(){
+        return $this->belongsTo(User::class,'user_id');
+    }
+    public function order_details(){
+        return $this->hasMany(OrderDetails::class,'order_id');
+    }
 }

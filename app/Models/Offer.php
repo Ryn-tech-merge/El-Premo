@@ -11,4 +11,8 @@ class Offer extends Model
     public function getImageAttribute(){
         return  get_file($this->attributes['image']);
     }
+
+    public function offerProducts(){
+        return $this->hasMany(OfferProduct::class,'offer_id');
+    }
 }

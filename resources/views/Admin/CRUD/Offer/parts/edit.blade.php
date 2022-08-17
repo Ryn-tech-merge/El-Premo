@@ -114,21 +114,23 @@
                     </tr>
                     </thead>
                     <tbody id="tbl_posts_body">
-                    <tr id="rec-1">
-                        <td><span class="sn">1</span>.</td>
+                    @foreach($offer->offerProducts as $key=>$one_product)
+                    <tr id="rec-{{$key+1}}">
+                        <td><span class="sn">{{$key+1}}</span>.</td>
                         <td>
                             <select name="product_id[]" class="form-control">
                                 <option value=""> اختر منتج  </option>
                                 @foreach($products as $product)
-                                    <option value="{{$product->id}}"> {{$product->name}}  </option>
+                                    <option {{$one_product->product_id == $product->id ? 'selected' :''}} value="{{$product->id}}"> {{$product->name}}  </option>
                                 @endforeach
                             </select>
                         </td>
                         <td>
-                            <input type="text" name="amount[]" class="form-control numbersOnly" >
+                            <input type="text" name="amount[]" value="{{$one_product->amount}}" class="form-control numbersOnly" >
                         </td>
-                        <td><a class="btn btn-xs delete-record2 " data-id="1"><i style="color: #f4516c" class="fa fa-trash"></i></a></td>
+                        <td><a class="btn btn-xs delete-record2 " data-id="{{$key+1}}"><i style="color: #f4516c" class="fa fa-trash"></i></a></td>
                     </tr>
+                    @endforeach
                     </tbody>
                 </table>
 
@@ -156,7 +158,7 @@
 </form>
 <!--end::Form-->
 <div style="display:none;">
-    <table id="sample_table">
+    <table id="sample_table1">
         <tr id="">
             <td><span class="sn"></span>.</td>
             <td>
@@ -210,8 +212,10 @@
 <script>
     jQuery(document).delegate('a.add_record', 'click', function(e) {
         e.preventDefault();
-        var content = jQuery('#sample_table tr');
-        var size = jQuery('#tbl_posts >tbody >tr').length + 1;
+        var content = jQuery('#sample_table1 tr');
+        // var tr = $(this).parent().parent().parent().parent()
+        var size = $('#tbl_posts_body>tr ').length + 1;
+        // alert(size)
         var  element = content.clone();
         element.attr('id', 'rec-'+size);
         element.find('.delete-record2').attr('data-id', size);

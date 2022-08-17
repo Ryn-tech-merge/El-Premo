@@ -10,6 +10,7 @@ use App\Http\Traits\PhotoTrait;
 use App\Models\Offer;
 use App\Models\Product;
 use App\Models\OfferProduct;
+use App\Models\Category;
 
 class OfferController extends Controller
 {
@@ -104,10 +105,8 @@ class OfferController extends Controller
     ################ Edit offer #################
     public function edit(Offer $offer)
     {
-        $offer_category = Category::where('id', $offer->category_id)->with('categoryBrands.brand')->first();
-        $categories = Category::all();
-        $units = Unit::all();
-        return view('Admin.CRUD.Offer.parts.edit', compact('offer','categories','units','offer_category'));
+        $products = Product::all();
+        return view('Admin.CRUD.Offer.parts.edit', compact('offer','products'));
     }
     ###############################################
     ################ update offer #################
@@ -115,33 +114,25 @@ class OfferController extends Controller
     {
         $valedator = Validator::make($request->all(), [
             'name' => 'required',
-//            'image' => 'required',
-            'category_id' => 'required',
-            'brand_id' => 'required',
-            'sm_unit_id' => 'required',
-            'min_sm_amount' => 'required',
-            'max_sm_amount' => 'required',
-            'sm_unit_price' => 'required',
-            'lg_sm_amount' => 'required',
-            'lg_amount' => 'required',
+            'type' => 'required',
+            'old_price' => 'required',
+            'price' => 'required',
+            'product_id' => 'required',
         ],
             [
                 'name.required' => 'الاسم مطلوب',
-//                'image.required' => ' الصورة مطلوبة',
-                'category_id.required' => 'القسم مطلوب',
-                'brand_id.required' => ' الشركة مطلوبة',
-                'sm_unit_id.required' => ' الوحدة الصغرى مطلوبة',
-                'min_sm_amount.required' => ' الحد الادنى للوحدة الصغرى مطلوب',
-                'max_sm_amount.required' => ' الحد الاقصى للوحدة الصغرى مطلوب',
-                'sm_unit_price.required' => ' سعر الوحدة الصغرى مطلوب',
-                'lg_sm_amount.required' => 'كمية الوحدة الكبرى من الصغرى مطلوبة',
-                'lg_amount.required' => ' الكمية الكبرى مطلوبة',
+                'old_price.required' => 'الاسم القديم مطلوب',
+                'price.required' => 'الاسم الحالى مطلوب',
+                'type.required' => ' النوع مطلوب',
+                'product_id.required' => ' يجب اضافة منتجات ',
             ]
         );
         if ($valedator->fails())
             return response()->json(['messages' => $valedator->errors()->getMessages(), 'success' => 'false']);
 
-        $data = $request->except('lg_amount');
+
+
+        $data = $request->except('product_id','amount');
 
         if ( $request->image && $request->image != null ){
             if (file_exists($offer->getAttributes()['image'])) {
@@ -151,6 +142,20 @@ class OfferController extends Controller
 
         }
         $offer->update($data);
+
+        OfferProduct::where('offer_id',$offer->id)->delete();
+        if (count($request->product_id) > 0){
+            foreach ($request['product_id'] as $key=>$product){
+                if ($product != null && $request->amount[$key] != null){
+    //                return $brand;
+                    OfferProduct::create([
+                        'product_id'   => $product,
+                        'offer_id'     => $offer->id,
+                        'amount'       => $request->amount[$key]
+                    ]) ;
+                }
+            }
+        }
 
         return response()->json(
             [

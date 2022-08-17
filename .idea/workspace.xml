@@ -2,73 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ad6fe4ef-dbc5-4ecc-a259-7150fbbd74f2" name="Changes" comment="updates last">
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/OfferController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/OrderController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/ProductController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/SettingController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/SliderController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/UnitController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/CategoryBrand.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/12871660644478.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/13141660644100.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/13991660644084.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/1581660644456.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/15921660644445.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/20201660644404.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/25621660644053.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/28271660644425.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/30331660644277.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/40071660643955.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/43591660647185.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/61931660646044.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/66011660644291.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/72271660644221.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/73901660646094.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/78181660646071.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/79911660644285.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/83311660644010.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/84501660644166.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/89661660643823.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/categories/95791660643980.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/offer/30241660664947.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/offer/37541660665261.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/offer/49781660665526.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/offer/64901660664959.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/product/14601660660297.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/sliders/19251660591638.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/sliders/51041660594214.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/sliders/70431660591660.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/sliders/77341660595137.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/uploads/sub_categories/37181660641392.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/Admin/CRUD/Offer/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/Admin/CRUD/Offer/parts/create.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/Admin/CRUD/Offer/parts/edit.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/Admin/CRUD/Product/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/Admin/CRUD/Product/parts/create.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/Admin/CRUD/Product/parts/edit.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/Admin/Setting/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/Admin/Slider/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/Admin/Slider/parts/create.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/Admin/Slider/parts/edit.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/Admin/Unit/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/Admin/Unit/parts/create.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/Admin/Unit/parts/edit.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/NotificationController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/Admin/CRUD/Notification/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/Admin/CRUD/Order/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/Admin/CRUD/Order/parts/details.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/Admin/CRUD/Order/parts/status.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/CategoryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/CategoryController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/SubCategoryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/SubCategoryController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Brand.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Brand.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Category.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Category.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/OfferController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/OfferController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/OrderController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/OrderController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Models/Offer.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Offer.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Product.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Product.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Slider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Slider.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/Admin/Category/parts/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/Admin/Category/parts/create.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/Admin/Category/parts/edit.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/Admin/Category/parts/edit.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/Admin/Profile/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/Admin/Profile/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/Admin/SubCategory/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/Admin/SubCategory/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/Admin/SubCategory/parts/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/Admin/SubCategory/parts/create.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/Admin/SubCategory/parts/edit.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/Admin/SubCategory/parts/edit.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/admin/inc/ajax.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/admin/inc/ajax.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/admin/js.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/admin/js.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/OfferProduct.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/OfferProduct.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Order.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Order.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/OrderDetails.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/OrderDetails.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/Admin/CRUD/Offer/parts/edit.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/Admin/CRUD/Offer/parts/edit.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/layouts/admin/sidebar.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/admin/sidebar.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/admin.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/admin.php" afterDir="false" />
     </list>
@@ -206,25 +152,26 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources/views/Admin/CRUD/Offer" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources/views/Admin/Notification" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\xampp\htdocs\El-Premo\resources\views\Admin\Notification" />
+      <recent name="D:\xampp\htdocs\El-Premo\resources\views\Admin\CRUD\Order" />
       <recent name="D:\xampp\htdocs\El-Premo\resources\views\Admin\CRUD\Offer" />
       <recent name="D:\xampp\htdocs\El-Premo\resources\views\Admin\CRUD\Product" />
       <recent name="D:\xampp\htdocs\El-Premo\resources\views\Admin\Unit" />
-      <recent name="D:\xampp\htdocs\El-Premo\resources\views\Admin\Slider" />
-      <recent name="D:\xampp\htdocs\El-Premo\resources\views\Admin\Contact" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\xampp\htdocs\El-Premo\resources\views\Admin\CRUD" />
       <recent name="D:\xampp\htdocs\El-Premo\app\Models" />
       <recent name="D:\xampp\htdocs\El-Premo\resources\views\layouts\admin\inc" />
     </key>
@@ -319,6 +266,10 @@
       <workItem from="1660573471961" duration="5970000" />
       <workItem from="1660589433826" duration="6539000" />
       <workItem from="1660638075748" duration="22739000" />
+      <workItem from="1660676971923" duration="505000" />
+      <workItem from="1660709477155" duration="2075000" />
+      <workItem from="1660724212262" duration="5399000" />
+      <workItem from="1660733056751" duration="14577000" />
     </task>
     <task id="LOCAL-00001" summary="updates">
       <created>1656522731552</created>

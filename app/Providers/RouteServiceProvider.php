@@ -15,6 +15,7 @@ class RouteServiceProvider extends ServiceProvider
      * @var string
      */
     protected $namespace = 'App\Http\Controllers';
+    protected $api_namespace = 'App\Http\Controllers\Api';
     protected $adminnamespase = 'App\Http\Controllers\Admin';
 
     /**
@@ -75,7 +76,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::prefix('api')
              ->middleware('api')
-             ->namespace($this->namespace)
+             ->namespace($this->api_namespace)
              ->group(base_path('routes/api.php'));
     }
     protected function mapAdminRoutes()

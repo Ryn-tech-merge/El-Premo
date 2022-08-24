@@ -33,7 +33,13 @@ if (!function_exists('get_file')) {
     function get_file($file)
     {
         if (!is_null($file))
-            return asset($file);
+//            if (file_exists($file)) {
+                return asset($file);
+//            }
+//            else {
+//                return asset('admin/imgs/default.jpg');
+//            }
+
         else
             return asset('admin/imgs/default.jpg');
 
@@ -288,6 +294,38 @@ if (!function_exists('phone_codes')) {
         function my_toaster($message = 'تم بنجاح',$alert_type = 'success') {
             session()->flash('message', $message);
             session()->flash('type', $alert_type);
+        }
+    }
+    //===================  apiResponse ===========================
+    if (!function_exists('apiResponse')) {
+        function apiResponse($data = '',$message = '',$code = '200',$status = '200') {
+            return response()->json(['data'=>$data,'message'=>$message,'code'=>$code],$status);
+        }
+    }
+    //===================  paginateResponse ===========================
+    if (!function_exists('paginateResponse')) {
+        function paginateResponse($data = '',$paginate = 'off',$message = '',$code = '200',$status = '200') {
+            if ($paginate == 'on'){
+//                apiResponse($data,$message,$code,$status);
+                $json = collect(["message" => $message,"code" => $code]) ;
+                return  $json->merge($data);
+            }
+            $json = collect(["message" => $message,"code" => $code]) ;
+            return  $json->merge($data);
+//            return response()->json(['data'=> $json->merge($data),'message'=>$message,'code'=>$code],200);
+        }
+    }
+    //===================  getToken ===========================
+    if (!function_exists('getToken')) {
+        function getToken() {
+            $token = null;
+            if (request()->header('auth_token') && request()->header('auth_token') != null)
+                $token = request()->header('auth_token');
+            elseif(request()->get('auth_token') && request()->get('auth_token') != null)
+                $token = request()->get('auth_token');
+            elseif(request()->auth_token && request()->auth_token != null)
+                $token = request()->auth_token;
+            return $token;
         }
     }
 

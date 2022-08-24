@@ -73,7 +73,7 @@
 
                     </div>
                     <div class=" ">
-                        <button type="reset" data-dismiss="modal" class="btn btn-light me-3 " style="width: 100px">غلق</button>
+                        <button type="reset" data-dismiss="modal" aria-label="Close" class="btn btn-light me-3 " style="width: 100px">غلق</button>
                     </div>
                 </div>
             </div>

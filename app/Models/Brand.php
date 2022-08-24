@@ -15,4 +15,5 @@ class Brand extends Model
     public function getImageAttribute(){
         return  get_file($this->attributes['image']);
     }
+    
 }

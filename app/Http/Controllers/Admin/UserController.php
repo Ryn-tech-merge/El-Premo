@@ -27,6 +27,9 @@ class UserController extends Controller
                 ->editColumn('address',function ($user){
                     return $user->address .'<br><a target="_blank" href="'.$user->shop_address_link.'" class="badge badge-success">الذهاب للعنوان</a>';
                 })
+                ->editColumn('image',function ($user){
+                    return '<img alt="image" class="img list-thumbnail border-0" style="width:100px" onclick="window.open(this.src)" src="'.$user->image.'">';
+                })
                 ->editColumn('block',function ($user){
                     $color = $user->block == "yes" ? "danger" :"dark";
                     $text = $user->block == "yes" ? "الغاء حظر" :"حظر";

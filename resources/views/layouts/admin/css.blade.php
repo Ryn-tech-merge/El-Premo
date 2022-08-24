@@ -91,5 +91,9 @@
     .dt-button span {
         padding-right: 38px;
     }
+
+    #widgetChart1{
+        width: 104% !important;
+    }
 </style>
 

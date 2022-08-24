@@ -23,9 +23,9 @@
                                 <th class="text-white">الاسم</th>
                                 <th class="text-white">رقم الهاتف</th>
                                 <th class="text-white">العنوان</th>
-                                <th class="text-white">صورة المحل</th>
-                                <th class="text-white">اسم المحل</th>
-                                <th class="text-white">عنوان المحل</th>
+                                <th class="text-white">الصورة </th>
+{{--                                <th class="text-white">اسم المحل</th>--}}
+{{--                                <th class="text-white">عنوان المحل</th>--}}
                                 <th class="text-white">المحفظة</th>
                                 <th class="text-white">حظر</th>
                                 <th class="text-white">تحكم</th>
@@ -52,9 +52,9 @@
             {data: 'name', name: 'name'},
             {data: 'phone', name: 'phone'},
             {data: 'address', name: 'address'},
-            {data: 'shop_image', name: 'shop_image'},
-            {data: 'shop_name', name: 'shop_name'},
-            {data: 'shop_address', name: 'shop_address'},
+            {data: 'image', name: 'image'},
+            // {data: 'shop_name', name: 'shop_name'},
+            // {data: 'shop_address', name: 'shop_address'},
             {data: 'wallet', name: 'wallet'},
             {data: 'block', name: 'block'},
             {data: 'action', name: 'action', orderable: false, searchable: false},

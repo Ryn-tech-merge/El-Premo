@@ -138,93 +138,93 @@ $(function(e) {
     chart1.render();
 	/*-----Sales-----*/
 
-	/*-----canvasDoughnut-----*/
-	if ($('#canvasDoughnut').length) {
-		var ctx = document.getElementById("canvasDoughnut").getContext("2d");
-		new Chart(ctx, {
-			type: 'doughnut',
-			data: {
-				labels: ['Mens', 'Womens', 'Kids', 'Electronics', 'Home & Furniture'],
-				datasets: [{
-					data: [56, 20, 30, 12, 22],
-					backgroundColor: ['#525ce5', '#9c52fd', '#24e4ac', "#ffa70b", "#ec5444"],
-					borderColor:'transparent',
-				}]
-			},
-			options: {
-				responsive: true,
-				maintainAspectRatio: false,
-				legend: {
-					display: false
-				},
-				cutoutPercentage: 65,
-			}
-		});
-	}
-	/*-----canvasDoughnut-----*/
+	// /*-----canvasDoughnut-----*/
+	// if ($('#canvasDoughnut').length) {
+	// 	var ctx = document.getElementById("canvasDoughnut").getContext("2d");
+	// 	new Chart(ctx, {
+	// 		type: 'doughnut',
+	// 		data: {
+	// 			labels: ['Mens', 'Womens', 'Kids', 'Electronics', 'Home & Furniture'],
+	// 			datasets: [{
+	// 				data: [56, 20, 30, 12, 22],
+	// 				backgroundColor: ['#525ce5', '#9c52fd', '#24e4ac', "#ffa70b", "#ec5444"],
+	// 				borderColor:'transparent',
+	// 			}]
+	// 		},
+	// 		options: {
+	// 			responsive: true,
+	// 			maintainAspectRatio: false,
+	// 			legend: {
+	// 				display: false
+	// 			},
+	// 			cutoutPercentage: 65,
+	// 		}
+	// 	});
+	// }
+	// /*-----canvasDoughnut-----*/
 
 
 	/*-----AreaChart Echart-----*/
-	var ctx = document.getElementById("widgetChart1");
-	var myChart = new Chart(ctx, {
-		type: 'line',
-		data: {
-			labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-			type: 'line',
-			datasets: [{
-				data: [24, 30, 20, 28, 39, 22, 40],
-				label: '',
-				backgroundColor: 'rgba(156, 82, 253,0.8)',
-				borderColor: '#9c52fd',
-			}, ]
-		},
-		options: {
-			maintainAspectRatio: false,
-			legend: {
-				display: false
-			},
-			responsive: true,
-			tooltips: {
-				mode: 'index',
-				titleFontSize: 12,
-				titleFontColor: '#000',
-				bodyFontColor: '#000',
-				backgroundColor: '#fff',
-				cornerRadius: 0,
-				intersect: false,
-			},
-			scales: {
-				xAxes: [{
-					gridLines: {
-						color: 'transparent',
-						zeroLineColor: 'transparent'
-					},
-					ticks: {
-						fontSize: 2,
-						fontColor: 'transparent'
-					}
-				}],
-				yAxes: [{
-					display: false,
-					ticks: {
-						display: false,
-					}
-				}]
-			},
-			title: {
-				display: false,
-			},
-			elements: {
-				line: {
-					borderWidth: 2
-				},
-				point: {
-					radius: 0,
-					hitRadius: 10,
-					hoverRadius: 4
-				}
-			}
-		}
-	});
+	// var ctx = document.getElementById("widgetChart1");
+	// var myChart = new Chart(ctx, {
+	// 	type: 'line',
+	// 	data: {
+	// 		labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+	// 		type: 'line',
+	// 		datasets: [{
+	// 			data: [24, 30, 20, 28, 39, 22, 40],
+	// 			label: '',
+	// 			backgroundColor: 'rgba(156, 82, 253,0.8)',
+	// 			borderColor: '#9c52fd',
+	// 		}, ]
+	// 	},
+	// 	options: {
+	// 		maintainAspectRatio: false,
+	// 		legend: {
+	// 			display: false
+	// 		},
+	// 		responsive: true,
+	// 		tooltips: {
+	// 			mode: 'index',
+	// 			titleFontSize: 12,
+	// 			titleFontColor: '#000',
+	// 			bodyFontColor: '#000',
+	// 			backgroundColor: '#fff',
+	// 			cornerRadius: 0,
+	// 			intersect: false,
+	// 		},
+	// 		scales: {
+	// 			xAxes: [{
+	// 				gridLines: {
+	// 					color: 'transparent',
+	// 					zeroLineColor: 'transparent'
+	// 				},
+	// 				ticks: {
+	// 					fontSize: 2,
+	// 					fontColor: 'transparent'
+	// 				}
+	// 			}],
+	// 			yAxes: [{
+	// 				display: false,
+	// 				ticks: {
+	// 					display: false,
+	// 				}
+	// 			}]
+	// 		},
+	// 		title: {
+	// 			display: false,
+	// 		},
+	// 		elements: {
+	// 			line: {
+	// 				borderWidth: 2
+	// 			},
+	// 			point: {
+	// 				radius: 0,
+	// 				hitRadius: 10,
+	// 				hoverRadius: 4
+	// 			}
+	// 		}
+	// 	}
+	// });
 
  });

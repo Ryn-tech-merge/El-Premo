@@ -24,4 +24,8 @@ class Product extends Model
     public function lg_unit(){
         return $this->belongsTo(Unit::class,'lg_unit_id');
     }
+    
+    public function orders(){
+        return $this->hasMany(Order::class,'product_id');
+    }
 }

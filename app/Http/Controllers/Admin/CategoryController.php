@@ -32,11 +32,11 @@ class CategoryController extends Controller
 
                        ';
 
-                })->addColumn('images', function ($category) {
-                    $url = route("category_images.index",'category_id='.$category->id);
-                    return '
-                                <a href="'.$url.'" class="btn btn-default btn-success btn-sm mb-2  mb-xl-0 " ><i class="fa fa-image text-white fs-16"></i></a>
-                            ';
+//                })->addColumn('images', function ($category) {
+//                    $url = route("category_images.index",'category_id='.$category->id);
+//                    return '
+//                                <a href="'.$url.'" class="btn btn-default btn-success btn-sm mb-2  mb-xl-0 " ><i class="fa fa-image text-white fs-16"></i></a>
+//                            ';
                 })
                 ->editColumn('image',function ($category){
                     return '<img alt="image" class="img list-thumbnail border-0" style="width:100px" onclick="window.open(this.src)" src="'.$category->image.'">';

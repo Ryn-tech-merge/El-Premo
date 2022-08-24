@@ -22,7 +22,7 @@
                                 <th class="text-white">#</th>
                                 <th class="text-white">الاسم</th>
                                 <th class="text-white">الصورة</th>
-                                <th class="text-white">صور الاقسام</th>
+{{--                                <th class="text-white">صور الاقسام</th>--}}
                                 <th class="text-white">تحكم</th>
                             </tr>
                             </thead>
@@ -92,7 +92,7 @@
             {data: 'id', name: 'id'},
             {data: 'name', name: 'name'},
             {data: 'image', name: 'image'},
-            {data: 'images', name: 'images'},
+            // {data: 'images', name: 'images'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ];
         //======================== addBtn =============================

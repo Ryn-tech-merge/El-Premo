@@ -24,20 +24,45 @@ Route::post('login','AuthController@login');
 Route::post('register','AuthController@register');
 /* ---------------------- home -------------------*/
 Route::get('home','HomeController@home');
+//Route::get('slider','HomeController@slider');
 
 /* ---------------------- categories -------------------*/
 Route::get('one_category','CategoryController@one_category');
 Route::get('one_product','CategoryController@one_product');
+Route::get('product_search','CategoryController@product_search');
 
 /* ---------------------- offers -------------------*/
 Route::get('offers','OfferController@offers');
+Route::get('one_offer','OfferController@one_offer');
+
+/* ---------------------- contact -------------------*/
+Route::post('contact_us','ContactController@contact_us');
+
 
 
 Route::group(['middleware'=>'all_guards:user_api'],function(){
+    Route::post('insert_token','AuthController@insert_token');
     Route::post('logout','AuthController@logout');
     Route::get('profile','AuthController@profile');
     Route::post('update_profile','AuthController@update_profile');
 
+    /* ---------------------- notifications -------------------*/
+    Route::get('notifications','NotificationController@notifications');
+
+    /* ---------------------- orders -------------------*/
+    Route::get('waiting_order_count','OrderController@waiting_order_count');
+    Route::post('store_order','OrderController@store_order');
+    Route::post('update_order','OrderController@update_order');
+    Route::get('current_orders','OrderController@current_orders');
+    Route::get('previous_orders','OrderController@previous_orders');
+    Route::get('order_details','OrderController@order_details');
+    Route::post('cancel_order','OrderController@cancel_order');
+//    Route::get('order_details_products','OrderController@order_details_products');
+
+    /* ---------------------- targets -------------------*/
+    Route::get('targets','TargetController@targets');
+    /* ---------------------- wallet -------------------*/
+    Route::get('wallet','WalletController@wallet');
 
 
 });

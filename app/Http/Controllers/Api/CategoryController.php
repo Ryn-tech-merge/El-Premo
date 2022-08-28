@@ -21,10 +21,12 @@ class CategoryController extends Controller
 
         $data['products'] = [];
         if ($request->brand_id && $request->brand_id != null)
-            $data['products'] = Product::where(['category_id'=>$request->id,'brand_id'=>$request->brand_id])
+            $data['products'] = Product::where('is_available','yes')
+                ->where(['category_id'=>$request->id,'brand_id'=>$request->brand_id])
             ->with('category','brand','sm_unit','lg_unit');
         else
-            $data['products'] = Product::where('category_id',$request->id)
+            $data['products'] = Product::where('is_available','yes')
+                ->where('category_id',$request->id)
                 ->with('category','brand','sm_unit','lg_unit');
 
         if ($request->paginate=='on') {
@@ -52,6 +54,7 @@ class CategoryController extends Controller
 
         $data['other_products'] = Product::where(['category_id'=>$data->category_id,'brand_id'=>$data->brand_id])
             ->where('id','!=',$request->id)
+            ->where('is_available','yes')
             ->with('category','brand','sm_unit','lg_unit')->limit(8)->get();
 
 //        if ($request->paginate=='on') {
@@ -62,6 +65,22 @@ class CategoryController extends Controller
 //            $data['other_products'] = $data['other_products']->get();
 //            $data['other_products'] =  paginateResponse($data['other_products']);
 //        }
+
+        return apiResponse($data);
+
+    }
+
+    //###############################################################//
+    public function product_search(Request $request){
+        $validator = Validator::make($request->all(),[
+            'name'=>'required',
+        ]);
+        if ($validator->fails()){
+            return apiResponse('',$validator->errors(),'422');
+        }
+        $data = Product::where('name','like','%' .$request->name. '%')
+            ->with('category','brand','sm_unit','lg_unit')
+            ->get();
 
         return apiResponse($data);
 

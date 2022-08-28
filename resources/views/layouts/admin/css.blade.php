@@ -94,6 +94,7 @@
 
     #widgetChart1{
         width: 104% !important;
+        border-radius: 20%;
     }
 </style>
 

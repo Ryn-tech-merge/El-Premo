@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 use App\Models\Order;
+use App\Models\Setting;
+use App\Models\Wallet;
 
 class OrderController extends Controller
 {
@@ -102,6 +104,21 @@ class OrderController extends Controller
     {
         $order = Order::where('id',$request->id)->first();
         $order->update(['status'=>$request->status]);
+        if ($order->status == 'ended'){
+        // Wallet
+            $setting        = Setting::first();
+            $user           = $order->user;
+            $user->points   += $setting->purchase_gift;
+            $user->save();
+            $wallet = new Wallet ;
+            $wallet->order_id   = $order->id;
+            $wallet->user_id    = $user->id;
+            $wallet->type       = 'purchases';
+            $wallet->price      = $setting->purchase_gift;
+            $wallet->save();
+        //end Wallet
+        }
+
         return response()->json(
             [
                 'success' => 'true',

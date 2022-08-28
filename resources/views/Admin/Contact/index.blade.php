@@ -13,7 +13,7 @@
                             <thead class="bg-primary text-white">
                             <tr>
                                 <th class="text-white">#</th>
-                                <th class="text-white">رقم الهاتف</th>
+                                <th class="text-white">الهاتف</th>
                                 <th class="text-white">البريد الالكترونى</th>
                                 <th class="text-white">الموضوع</th>
                                 <th class="text-white">الرسالة</th>

@@ -10,7 +10,8 @@ use App\Models\Offer;
 class OfferController extends Controller
 {
     public function offers(Request $request){
-        $data = Offer::where(function ($query){
+        $data = Offer::where('is_available','yes')
+            ->where(function ($query){
                 $query->where('amount','>',0)
                     ->orwhere('amount',null);
             })->where(function ($query){
@@ -21,14 +22,27 @@ class OfferController extends Controller
                 $query->where('end_date','>=',date('Y-m-d'))
                     ->orwhere('end_date',null);
             })
-            ->with('offerProducts.product')
-            ->get();
+            ->with('offerProducts.unit','offerProducts.product.category','offerProducts.product.brand','offerProducts.product.sm_unit','offerProducts.product.lg_unit')
+            ->latest()->get();
 
         return apiResponse($data);
 
     }
 
     //###############################################################//
+    public function one_offer(Request $request){
+        $validator = Validator::make($request->all(),[
+            'id'=>'required',
+        ]);
+        if ($validator->fails()){
+            return apiResponse('',$validator->errors(),'422');
+        }
+        $data = Offer::where('id',$request->id)
+            ->with('offerProducts.unit','offerProducts.product.category','offerProducts.product.brand','offerProducts.product.sm_unit','offerProducts.product.lg_unit')
+            ->first();
+
+        return apiResponse($data);
+    }
 
 
 }

@@ -92,7 +92,7 @@
                             <h2 class="mb-0 number-font">{{$category_count}}</h2>
                             <p class="text-white mb-0">الاقسام</p>
                         </div>
-                        <div class="mr-auto"> <i class="fa fa-shopping-basket text-white fs-30 ml-2 mt-2"></i> </div>
+                        <div class="mr-auto"> <i class="fa fa-bars text-white fs-30 ml-2 mt-2"></i> </div>
                     </div>
                 </div>
             </div>
@@ -106,7 +106,7 @@
                             <h2 class="mb-0 number-font">{{$brand_count}}</h2>
                             <p class="text-white mb-0">الشركات</p>
                         </div>
-                        <div class="mr-auto"> <i class="fa fa-shopping-basket text-white fs-30 ml-2 mt-2"></i> </div>
+                        <div class="mr-auto"> <i class="fa fa-building text-white fs-30 ml-2 mt-2"></i> </div>
                     </div>
                 </div>
             </div>

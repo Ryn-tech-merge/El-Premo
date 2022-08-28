@@ -73,4 +73,11 @@ class HomeController extends Controller
         return apiResponse($data);
 
     }
+
+//    //############################################################################
+//    public function slider(){
+//        $slider = Slider::all();
+//        return apiResponse($slider);
+//
+//    }
 }

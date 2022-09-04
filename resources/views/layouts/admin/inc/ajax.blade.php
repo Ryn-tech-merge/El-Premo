@@ -53,12 +53,12 @@
             "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],     // page length options
             pageLength: 10,
 
-
         });
 
         table.buttons().container().appendTo( '#exportexample_wrapper .col-md-6:eq(0)' );
 
     });
+
 
     $(document).on('click', '#addBtn', function () {
         $('#form-load').html(loader)
@@ -66,7 +66,7 @@
 
         setTimeout(function (){
             $('#form-load').load("{{route("$url.create")}}")
-        },1000)
+        },100)
     });
 
     $(document).on('submit',"form#form",function (e) {
@@ -102,7 +102,7 @@
                             my_toaster(message,'error')
                         });
                     }
-                }, 1000);
+                }, 100);
 
 
 
@@ -180,7 +180,7 @@
                             my_toaster("هناك خطأ",'error')
                         }
 
-                    }, 1000);
+                    }, 500);
                 }, error: function (data) {
                     $('#global-loader').hide()
 
@@ -219,7 +219,7 @@
 
         setTimeout(function (){
             $('#form-load').load(url)
-        },1000)
+        },100)
 
 
     });

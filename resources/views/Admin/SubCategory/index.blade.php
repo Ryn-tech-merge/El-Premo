@@ -1,11 +1,12 @@
 @extends('layouts.admin.app')
-@section('page_title') الشركات @endsection
+@section('page_title') الاقسام الفرعية @endsection
 @section('content')
     <div class="row">
         <div class="col-md-12 col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">شركات البريمو</h3>
+                    <h3 class="card-title">الاقسام الفرعية</h3>
+                    @if(in_array(18,admin()->user()->permission_ids))
                     <div class="mr-auto pageheader-btn">
                         <a href="#"  id="addBtn" class="btn btn-primary btn-icon text-white">
                                         <span>
@@ -13,6 +14,7 @@
                                         </span> اضافة جديد
                         </a>
                     </div>
+                    @endif
                 </div>
                 <div class="card-body">
                     <div class="{{--table-responsive--}}">
@@ -46,7 +48,7 @@
                 <!--begin::Modal header-->
                 <div class="modal-header">
                     <!--begin::Modal title-->
-                    <h2>الشركات</h2>
+                    <h2>الاقسام الفرعية</h2>
                     <!--end::Modal title-->
                     <!--begin::Close-->
                     <div class="btn btn-sm btn-icon btn-active-color-primary" style="cursor: pointer" data-dismiss="modal" aria-label="Close">

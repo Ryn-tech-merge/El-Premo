@@ -20,17 +20,21 @@ class SubCategoryController extends Controller
             $sub_categorys = Brand::/*with('category')->*/latest()->get();
             return Datatables::of($sub_categorys)
                 ->addColumn('action', function ($sub_category) {
-                    return '
+                    $action = '';
+                    if(in_array(16,admin()->user()->permission_ids)) {
+                        $action .= '
                         <button  id="editBtn" class="btn btn-default btn-primary btn-sm mb-2  mb-xl-0 "
                              data-id="' . $sub_category->id . '" ><i class="fa fa-edit text-white"></i>
-                        </button>
-
+                        </button>';
+                    }
+                    if(in_array(17,admin()->user()->permission_ids)) {
+                        $action .= '
                         <button class="btn btn-default btn-danger btn-sm mb-2 mb-xl-0 delete"
                              data-id="' . $sub_category->id . '" ><i class="fa fa-trash-o text-white"></i>
                         </button>
-
-                       ';
-
+                        ';
+                    }
+                    return $action;
                 })
 
                 ->editColumn('image',function ($sub_category){

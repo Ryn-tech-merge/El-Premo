@@ -21,16 +21,20 @@ class ProductController extends Controller
             $products = Product::with('category','brand','sm_unit','lg_unit')->latest()->get();
             return Datatables::of($products)
                 ->addColumn('action', function ($product) {
-                    return '
+                    $action = '';
+                    if(in_array(32,admin()->user()->permission_ids)) {
+                        $action .= '
                         <button  id="editBtn" class="btn btn-default btn-primary btn-sm mb-2  mb-xl-0 "
                              data-id="' . $product->id . '" ><i class="fa fa-edit text-white"></i>
-                        </button>
-
+                        </button> ';
+                    }
+                    if(in_array(33,admin()->user()->permission_ids)) {
+                        $action .= '
                         <button class="btn btn-default btn-danger btn-sm mb-2 mb-xl-0 delete"
                              data-id="' . $product->id . '" ><i class="fa fa-trash-o text-white"></i>
-                        </button>
-
-                       ';
+                        </button>';
+                    }
+                    return $action;
 
                 })
                 ->editColumn('image',function ($product){
@@ -47,6 +51,11 @@ class ProductController extends Controller
                 })
                 ->addColumn('lg_unit',function ($product){
                     return $product->lg_unit->name??'';
+                })
+                ->editColumn('is_available',function ($product){
+                    $status = $product->is_available=='yes' ? 'فعال' :'غير فعال' ;
+                    $color = $product->is_available=='yes' ? 'badge-success' :'badge-danger' ;
+                    return '<span class="badge ' . $color . ' " >'.$status.'</a>';
                 })
                 ->escapeColumns([])
                 ->make(true);

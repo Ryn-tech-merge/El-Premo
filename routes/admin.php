@@ -32,6 +32,9 @@ Route::group(['prefix' => 'admin'], function () {
         ################################### users ##########################################
         Route::resource('users','UserController');
         Route::get('block_user/{id}','UserController@block')->name('users.block');
+        Route::get('change_user_active/{id}','UserController@change_active')->name('change_user_active');
+        Route::get('user_profile/{id}','UserController@user_profile')->name('user_profile');
+        Route::get('getGovernorateCities','UserController@getGovernorateCities')->name('getGovernorateCities');
 
         ################################### categories ##########################################
         Route::resource('categories','CategoryController');
@@ -43,6 +46,8 @@ Route::group(['prefix' => 'admin'], function () {
 
         ################################### contacts ##########################################
         Route::resource('contacts','ContactController');
+        Route::get('replay_contact/{id}','ContactController@replay')->name('replay_contact');
+        Route::post('post_replay_contact','ContactController@post_replay')->name('post_replay_contact');
 
         ################################### settings ##########################################
         Route::resource('settings','SettingController');
@@ -58,6 +63,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         ################################### offers ##########################################
         Route::resource('offers','OfferController');
+        Route::get('get_product_units','OfferController@get_product_units')->name('get_product_units');
 
         ################################### orders ##########################################
         Route::resource('orders','OrderController');
@@ -68,11 +74,21 @@ Route::group(['prefix' => 'admin'], function () {
         ################################### notifications ##########################################
         Route::resource('notifications','NotificationController');
 
+        ################################### gift_for ##########################################
+        Route::resource('targets','TargetController');
+
+        ################################### coupons ##########################################
+        Route::resource('coupons','CouponController');
+
 
     });//end Middleware Admin
 
-//    Route::fallback(function () {
-//        return redirect('admin/home');
-//    });
-
+    Route::fallback(function () {
+        return redirect('admin/home');
+    });
+    Route::get('/clear-cache', function() {
+        Artisan::call('cache:clear');
+        Artisan::call('optimize:clear');
+        return '<h1> cache cleared</h1>';
+    });
 });//end Prefix

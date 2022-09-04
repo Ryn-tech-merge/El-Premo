@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 use App\Models\Contact;
+use App\Models\Notification;
 
 class ContactController extends Controller
 {
@@ -16,11 +17,22 @@ class ContactController extends Controller
             $contacts = Contact::latest()->get();
             return Datatables::of($contacts)
                 ->addColumn('action', function ($contact) {
+                if(in_array(21,admin()->user()->permission_ids)) {
                     return '
                         <button class="btn btn-default btn-danger btn-sm mb-2 mb-xl-0 delete"
                              data-id="' . $contact->id . '" ><i class="fa fa-trash-o text-white"></i>
                         </button>
                        ';
+                    }
+                })
+                ->addColumn('replay', function ($contact) {
+                    if ($contact->user_id == null) return '';
+                    if(in_array(20,admin()->user()->permission_ids)) {
+                        return '
+                            <div class="card-options pr-2">
+                                <a class="btn btn-sm btn-primary text-white replayBtn"  href="' . url("admin/replay_contact", $contact->user_id) . '"><i class="fa fa-reply mb-0"></i></a>
+                            </div>';
+                    }
                 })
                 ->escapeColumns([])
                 ->make(true);
@@ -38,6 +50,27 @@ class ContactController extends Controller
             [
                 'code' => 200,
                 'message' => 'تم الحذف بنجاح'
+            ]);
+    }
+
+    ##############################################
+    public function replay($id)
+    {
+        return view('Admin.Contact.parts.replay', compact('id'));
+    }
+
+    ##############################################
+    public function post_replay(Request $request)
+    {
+        $notification = new Notification;
+        $notification->user_id = $request->user_id;
+        $notification->title = 'تم الرد على رسالتك';
+        $notification->message = $request->message;
+        $notification->save();
+        return response()->json(
+            [
+                'success' => 'true',
+                'message' => 'تم الاضافة بنجاح '
             ]);
     }
 

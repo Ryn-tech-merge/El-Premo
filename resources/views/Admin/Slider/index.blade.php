@@ -5,7 +5,8 @@
         <div class="col-md-12 col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">اقسام البريمو</h3>
+                    <h3 class="card-title">صور العرض</h3>
+                    @if(in_array(26,admin()->user()->permission_ids)) {
                     <div class="mr-auto pageheader-btn">
                         <a href="#"  id="addBtn" class="btn btn-primary btn-icon text-white">
                                         <span>
@@ -13,6 +14,7 @@
                                         </span> اضافة جديد
                         </a>
                     </div>
+                    @endif
                 </div>
                 <div class="card-body">
                     <div class="{{--table-responsive--}}">

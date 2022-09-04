@@ -11,7 +11,7 @@ class WalletController extends Controller
 {
     public function wallet(){
         $wallet = Wallet::where(['user_id'=>Auth::guard('user_api')->user()->id])
-            ->with('order','user')
+            ->with('order','user.governorate','user.city')
             ->latest()->get();
         return apiResponse($wallet);
     }

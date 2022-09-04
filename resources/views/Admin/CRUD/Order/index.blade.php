@@ -1,11 +1,111 @@
 @extends('layouts.admin.app')
 @section('page_title') الطلبات @endsection
+<!-- INTERNAL SELECT2 CSS -->
+<link href="{{url('admin')}}/assets/plugins/select2/select2.min.css" rel="stylesheet"/>
+
 @section('content')
     <div class="row">
         <div class="col-md-12 col-lg-12">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">الطلبات</h3>
+                    <!-- ROW-6 OPEN -->
+                    <!-- ROW-6 CLOSED -->
+{{--                    <form id="filter_form" name="filter_form">--}}
+{{--                        <div class="form-group d-inline-block">--}}
+{{--                            <label for="from"> من تاريخ </label>--}}
+{{--                            <input type="date" class="form-control date_change" name="from" id="from">--}}
+{{--                        </div>--}}
+{{--                        <div class="form-group d-inline-block">--}}
+{{--                            <label for="to"> الى تاريخ </label>--}}
+{{--                            <input type="date" class="form-control date_change" name="to" id="to" value="2022-08-29">--}}
+{{--                        </div>--}}
+{{--                    </form>--}}
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 ">
+                        <div class="card">
+                            <div class="card-status bg-blue br-tr-7 br-tl-7"></div>
+                            <div class="card-header">
+                                <div class="card-title">تاريخ انشاء الطلب</div>
+                                <div class="card-options">
+                                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                                    <a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="mg-b-20 mg-sm-b-40">اختر تاريخ البداية و النهاية</p>
+                                <div class="wd-200 mg-b-30">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                            </div>
+                                        </div>
+                                        <input class="form-control fc-datepicker order_filter" id="created_from"  placeholder="تاريخ البداية " type="text">
+                                        <input class="form-control fc-datepicker order_filter" id="created_to" placeholder="تاريخ النهاية " type="text">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- COL END -->
+                    <div class="col-lg-4 ">
+                        <div class="card">
+                            <div class="card-status bg-blue br-tr-7 br-tl-7"></div>
+                            <div class="card-header">
+                                <div class="card-title">تاريخ توصيل الطلب</div>
+                                <div class="card-options">
+                                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                                    <a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="mg-b-20 mg-sm-b-40">اختر تاريخ البداية و النهاية</p>
+                                <div class="wd-200 mg-b-30">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                            </div>
+                                        </div>
+                                        <input class="form-control fc-datepicker order_filter" id="delivery_from" placeholder="تاريخ البداية " type="text">
+                                        <input class="form-control fc-datepicker order_filter" id="delivery_to"  placeholder="تاريخ النهاية " type="text">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- COL END -->
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-status bg-blue br-tr-7 br-tl-7"></div>
+                            <div class="card-header">
+                                <div class="card-title">الطلبات حسب الحالة</div>
+                                <div class="card-options">
+                                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                                    <a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="mg-b-20 mg-sm-b-40">اختر حالة الطلب .</p>
+                                <div class="wd-200 mg-b-30">
+                                    <div class="input-group">
+                                        <select class="form-control select2 custom-select order_filter" id="status" data-placeholder="اختر حالة ... ">
+                                            <option label=" اختر حالة ... ">
+                                            </option>
+                                            <option value="all">الكل</option>
+                                            <option value="waiting">تحت الطلب</option>
+                                            <option value="new">جديد</option>
+                                            <option value="on_going">جارى التحضير</option>
+                                            <option value="delivery">جارى التوصيل</option>
+                                            <option value="ended">منتهى</option>
+                                            <option value="canceled">تم الالغاء</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- COL END -->
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -28,6 +128,7 @@
                             <tbody>
 
                             </tbody>
+
                         </table>
 
 
@@ -113,7 +214,7 @@
             var url = $(this).attr('href')
             setTimeout(function (){
                 $('#form-load').load(url)
-            },1000)
+            },100)
         });
 
         $(document).on('click',".status_submit",function (e) {
@@ -138,7 +239,7 @@
                             my_toaster(data.message)
                             $('#exportexample').DataTable().ajax.reload(null, false);
                         }
-                    }, 1000);
+                    }, 100);
 
                 },
                 error: function (data) {
@@ -174,4 +275,47 @@
             });
         });
     </script>
+
+    <script>
+        function reload_table(){
+            var created_from = $('#created_from').val();
+            var created_to = $('#created_to').val();
+            var delivery_from = $('#delivery_from').val();
+            var delivery_to = $('#delivery_to').val();
+            var status = $('#status').val();
+            var url = window.location.href+"?created_from=" + created_from + "&created_to=" + created_to +
+                "&delivery_from=" + delivery_from + "&delivery_to=" + delivery_to + "&status=" + status;
+            $('#exportexample').DataTable().ajax.url(url).draw();
+        }
+
+        $(document).on('change','.order_filter', function () {
+            reload_table()
+        })
+    </script>
+
+    <!-- INTERNAL BOOTSTRAP-DATERANGEPICKER JS -->
+    <script src="{{url('admin')}}/assets/plugins/bootstrap-daterangepicker/moment.min.js"></script>
+    <script src="{{url('admin')}}/assets/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
+
+    <!-- INTERNAL  TIMEPICKER JS -->
+    <script src="{{url('admin')}}/assets/plugins/time-picker/jquery.timepicker.js"></script>
+    <script src="{{url('admin')}}/assets/plugins/time-picker/toggles.min.js"></script>
+
+    <!-- INTERNAL DATEPICKER JS-->
+    <script src="{{url('admin')}}/assets/plugins/date-picker/spectrum.js"></script>
+    <script src="{{url('admin')}}/assets/plugins/date-picker/jquery-ui.js"></script>
+    <script src="{{url('admin')}}/assets/plugins/input-mask/jquery.maskedinput.js"></script>
+
+    <!--INTERNAL  FORMELEMENTS JS -->
+    <script src="{{url('admin')}}/assets/js/form-elements.js"></script>
+    <script src="{{url('admin')}}/assets/js/select2.js"></script>
+
+    <!-- INTERNAL SELECT2 JS -->
+    <script src="{{url('admin')}}/assets/plugins/select2/select2.full.min.js"></script>
+
+{{--    <script type="text/javascript">--}}
+{{--        $(document).ready(function () {--}}
+{{--            $('.card-options-collapse').click();--}}
+{{--        })--}}
+{{--    </script>--}}
 @endpush

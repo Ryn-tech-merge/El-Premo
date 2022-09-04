@@ -21,6 +21,7 @@ class AuthController extends Controller
         try {
             // validation
             $validator = Validator::make($request->all(),[
+                'phone_code' => 'required',
                 'phone'=>'required'
             ]);
             if ($validator->fails()){
@@ -30,21 +31,25 @@ class AuthController extends Controller
                 'phone'=>'exists:users,phone'
             ]);
             if ($validator->fails()){
-                return apiResponse('','invalid credentials register please ','409');
+                return apiResponse(null,'invalid credentials register please ','409');
             }
 
 
             //login
-            $credentials = ['phone'=>$request->phone];
-            $user = User::where($credentials)->first(); // generate token
-            $token = Auth::guard('user_api')->login($user); // generate token
-            if (!$token)
-                return apiResponse('','invalid credentials','409');
+            $credentials = ['phone_code'=>$request->phone_code , 'phone'=>$request->phone];
+            $user = User::with('governorate','city')->where($credentials)->first(); // generate token
+            if ($user){
+//                if ($user->is_active == 'no')
+//                    return apiResponse('',' لم يتم قبول حسابك من الادارة ','410');
+//                if ($user->block == 'yes')
+//                    return apiResponse('',' تم حظر حسابك من الادارة ','410');
 
-            $user->token = $token;
-            return apiResponse($user,'','200');
+                $user->token = Auth::guard('user_api')->login($user); // generate token
+                return apiResponse($user);
+            }else{
+                return apiResponse(null,'invalid credentials register please ','409');
+            }
 
-            //token
         }catch (\Exception $ex){
             return apiResponse($ex->getCode(),$ex->getMessage(),'422');
         }
@@ -60,16 +65,20 @@ class AuthController extends Controller
                 'phone'=>'required|unique:users,phone',
                 'email'=>'nullable|unique:users,email',
                 'name'=>'required',
+                'city_id'=>'required',
+                'governorate_id'=>'required',
                 'image'=>'nullable',
             ]);
             if ($validator->fails()){
-                return apiResponse('',$validator->errors(),'422');
+                return apiResponse(null,$validator->errors(),'422');
             }
             $data = $request->all();
-
+            $data['phone_code'] = $request->phone_code ?? '+20' ;
             if ($request->image && $request->image != null)
                 $data['image']    = 'uploads/users/'.$this->saveImage($request->image,'uploads/users');
             $user = User::create($data);
+
+            $token = Auth::guard('user_api')->login($user); // generate token
 
             // Wallet
             $setting = Setting::first();
@@ -82,15 +91,10 @@ class AuthController extends Controller
             $wallet->save();
             //end Wallet
 
-            $token = Auth::guard('user_api')->login($user); // generate token
+            $user = User::where('id', $user->id)->with('governorate','city')->first();
             $user->token = $token;
-//            return $user;
-
-
-
-
-
-            return apiResponse($user,'','200');
+            
+            return apiResponse($user);
 
         }catch (\Exception $ex){
             return apiResponse($ex->getCode(),$ex->getMessage(),'422');
@@ -108,7 +112,7 @@ class AuthController extends Controller
             'token' => 'required',
         ]);
         if ($validator->fails()) {
-            return apiResponse('',$validator->errors(),'422');
+            return apiResponse(null,$validator->errors(),'422');
         }
         $token=PhoneToken::updateOrCreate([
             'user_id'=>Auth::guard('user_api')->user()->id ,
@@ -125,7 +129,7 @@ class AuthController extends Controller
             'token' => 'required',
         ]);
         if ($validator->fails()) {
-            return response()->json(['data'=>null,'code'=>422,'message'=>$validator->errors()],'422');
+            return apiResponse(null,$validator->errors(),'422');
         }
         PhoneToken::where(['user_id' => Auth::guard('user_api')->user()->id, 'phone_token' => $request->token])->delete();
 
@@ -133,31 +137,33 @@ class AuthController extends Controller
         if ($token != null){
             try {
                 JWTAuth::setToken($token)->invalidate(); // logout user
-                return apiResponse('','logout done');
+                return apiResponse(null,'logout done');
             }catch(TokenInvalidException $e){
-                return apiResponse('','some thing went wrong','422');
+                return apiResponse(null,'some thing went wrong','422');
             }
         }
         else{
-            return apiResponse('','some thing went wrong','422');
+            return apiResponse(null,'some thing went wrong','422');
         }
     }
     //===========================================
     public function profile(Request $request){
-        return apiResponse(Auth::user(),'','422');
+        $user = User::where('id',Auth::user()->id)->with('governorate','city')->first();
+        return apiResponse($user,'','422');
     }
     //===========================================
     public function update_profile(Request $request){
         $validator = Validator::make($request->all(),[
+            'phone_code'=>'required',
             'phone'=>'required|unique:users,phone,'.Auth::user()->id,
 //            'email'=>'nullable|unique:users,email,'.Auth::user()->id,
             'name'=>'required',
             'image'=>'nullable',
         ]);
         if ($validator->fails()){
-            return apiResponse('',$validator->errors(),'422');
+            return apiResponse(null,$validator->errors(),'422');
         }
-        $user = Auth::user();
+        $user = User::where('id',Auth::user()->id)->with('governorate','city')->first();
         $data = $request->all();
         if (isset($request->image) && $request->image != ''){
             if (file_exists($user->getAttributes()['image'])) {
@@ -169,6 +175,6 @@ class AuthController extends Controller
         }
         $user->update($data);
 
-        return apiResponse($user,'','200');
+        return apiResponse($user);
     }
 }

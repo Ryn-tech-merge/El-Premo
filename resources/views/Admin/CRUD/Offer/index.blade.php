@@ -11,6 +11,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">عروض البريمو</h3>
+                    @if(in_array(38,admin()->user()->permission_ids)) {
                     <div class="mr-auto pageheader-btn">
                         <a href="#"  id="addBtn" class="btn btn-primary btn-icon text-white">
                                         <span>
@@ -18,6 +19,7 @@
                                         </span> اضافة جديد
                         </a>
                     </div>
+                    @endif
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -35,6 +37,7 @@
                                 <th class="text-white">النسبة </th>
                                 <th class="text-white">السعر القديم </th>
                                 <th class="text-white">السعر الحالى </th>
+                                <th class="text-white">الحالة</th>
                                 <th class="text-white">تحكم</th>
                             </tr>
                             </thead>
@@ -112,6 +115,7 @@
             {data: 'percentage', name: 'percentage'},
             {data: 'old_price', name: 'old_price'},
             {data: 'price', name: 'price'},
+            {data: 'is_available', name: 'is_available'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ];
         //======================== addBtn =============================

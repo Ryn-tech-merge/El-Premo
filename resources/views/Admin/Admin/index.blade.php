@@ -6,13 +6,15 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">مشرفين البريمو</h3>
-                    <div class="mr-auto pageheader-btn">
-                        <a href="#"  id="addBtn" class="btn btn-primary btn-icon text-white">
-                                        <span>
-                                            <i class="fe fe-plus"></i>
-                                        </span> اضافة جديد
-                        </a>
-                    </div>
+                    @if(in_array(4,admin()->user()->permission_ids))
+                        <div class="mr-auto pageheader-btn">
+                            <a href="#"  id="addBtn" class="btn btn-primary btn-icon text-white">
+                                            <span>
+                                                <i class="fe fe-plus"></i>
+                                            </span> اضافة جديد
+                            </a>
+                        </div>
+                    @endif
                 </div>
                 <div class="card-body">
                     <div class="{{--table-responsive--}}">

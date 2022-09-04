@@ -6,39 +6,62 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Brand;
 use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
-    public function one_category(Request $request){
-        $validator = Validator::make($request->all(),[
-            'id'=>'required',
+    public function one_category(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
         ]);
-        if ($validator->fails()){
-            return apiResponse('',$validator->errors(),'422');
+        if ($validator->fails()) {
+            return apiResponse('', $validator->errors(), '422');
         }
-        $data = Category::where('id',$request->id)->with('categoryBrands.brand')->first();
+        $data = Category::where('id', $request->id)->with('categoryBrands.brand')->first();
 
-        $data['products'] = [];
-        if ($request->brand_id && $request->brand_id != null)
-            $data['products'] = Product::where('is_available','yes')
-                ->where(['category_id'=>$request->id,'brand_id'=>$request->brand_id])
-            ->with('category','brand','sm_unit','lg_unit');
-        else
-            $data['products'] = Product::where('is_available','yes')
-                ->where('category_id',$request->id)
-                ->with('category','brand','sm_unit','lg_unit');
-
-        if ($request->paginate=='on') {
-            $number = $request->page_num??10;
-            $data['products'] = $data['products']->paginate($number);
-            $data['products'] =  paginateResponse($data['products'],'on');
-        }else{
-            $data['products'] = $data['products']->get();
-            $data['products'] =  paginateResponse($data['products']);
+//        $id = $request->id;
+//        $data = Brand::with('categoryBrands.brand')->get();
+//            return $data;
+        $array = [];
+        foreach ($data->categoryBrands as $item) {
+            $array[] = $item->brand;
+            $item->brand->products = Product::where('is_available', 'yes')
+                ->where(['category_id' => $request->id, 'brand_id' => $item->brand->id])
+                ->with('category', 'brand', 'sm_unit', 'lg_unit')
+                ->get();
         }
 
-        return apiResponse($data);
+//        $data =$data->pluck('brand');
+
+
+//        $data['products'] = [];
+//        if ($request->brand_id && $request->brand_id != null){
+//            $data['products'] = Product::where('is_available', 'yes')
+//                ->where(['category_id' => $request->id, 'brand_id' => $request->brand_id])
+//                ->with('category', 'brand', 'sm_unit', 'lg_unit')
+//                ->get();
+//            }else{
+//                    $data['products'] = Product::where('is_available', 'yes')
+//                        ->where(['category_id' => $request->id])
+//                        ->with('category', 'brand', 'sm_unit', 'lg_unit')
+//                        ->get();
+//            }
+        //            $data['products'] = Product::where('is_available','yes')
+//                ->where('category_id',$request->id)
+//                ->with('products','category','brand','sm_unit','lg_unit');
+
+//        if ($request->paginate=='on') {
+//            $number = $request->page_num??10;
+//            $data['products'] = $data['products']->paginate($number);
+//            $data['products'] =  paginateResponse($data['products'],'on');
+//        }else{
+//            $data['products'] = $data['products']->get();
+//            $data['products'] =  paginateResponse($data['products']);
+//        }
+
+        return apiResponse($array);
 
     }
 

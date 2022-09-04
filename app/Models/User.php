@@ -28,4 +28,14 @@ class User extends Authenticatable implements JWTSubject
     public function getShopAddressLinkAttribute(){
         return 'https://www.google.com/maps/@'.$this['latitude'].','.$this['longitude'].',15z';
     }
+    
+    public function governorate(){
+        return $this->belongsTo(Governorate::class);
+    }
+    public function city(){
+        return $this->belongsTo(City::class);
+    }
+    public function wallets(){
+        return $this->hasMany(Wallet::class,'user_id');
+    }
 }

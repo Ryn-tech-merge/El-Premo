@@ -28,11 +28,11 @@
         <!--begin::Input group-->
         <div class="d-flex flex-column mb-2 fv-row col-sm-6 mt-0">
             <label class="d-flex align-items-center fs-6 fw-bold form-label ">
-                <span class="required"> الشركة  </span>
-                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title=" الشركة "></i>
+                <span class="required"> القسم الفرعى  </span>
+                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title=" القسم الفرعى "></i>
             </label>
             <select class="form-control " id="brand_change" name="brand_id">
-                <option value="" selected disabled>اختر شركة  ...</option>
+                <option value="" selected disabled>اختر قسم  ...</option>
 
             </select>
         </div>
@@ -126,10 +126,12 @@
         <!--begin::Input group-->
         <div class="d-flex flex-column mb-2 fv-row col-sm-6 mt-0">
             <label class="d-flex align-items-center fs-6 fw-bold form-label ">
-                <span class="required">كمية الوحدة الكبرى من الصغرى</span>
+                <span class="required col-4"> الوحدة الكبرى = </span>
+                <input type="text" class="form-control form-control-solid numbersOnly change_amount d-inline-block col-4" placeholder="الكمية " name="lg_sm_amount" id="lg_sm_amount" value=""/>
+                <span class="required col-4"> الوحدة الصغرى  </span>
+
                 <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="كمية الوحدة الكبرى من الصغرى  "></i>
             </label>
-            <input type="text" class="form-control form-control-solid numbersOnly change_amount" placeholder="الكمية " name="lg_sm_amount" id="lg_sm_amount" value=""/>
         </div>
         <!--end::Input group-->
         <!--begin::Input group-->
@@ -150,6 +152,38 @@
             <input type="text" class="form-control form-control-solid numbersOnly" readonly placeholder="الكمية الصغرى " id="amount" name="amount" value=""/>
         </div>
         <!--end::Input group-->
+        <!--begin::Input group-->
+        <div class="d-flex flex-column mb-2 fv-row col-sm-6 mt-0">
+            <label class="d-flex align-items-center fs-6 fw-bold form-label ">
+                <span class="required">سعر الشراء</span>
+                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="سعر الشراء  "></i>
+            </label>
+            <input type="text" class="form-control form-control-solid numbersOnly" readonly placeholder="سعر الشراء " id="purchase_price" name="purchase_price" value=""/>
+        </div>
+        <!--end::Input group-->
+        <!--begin::Input group-->
+        <div class="d-flex flex-column mb-2 fv-row col-sm-6 mt-0 ">
+            <!--begin::Label-->
+            <label class="d-flex align-items-center fs-6 fw-bold form-label ">
+                <span class="required">الحالة </span>
+                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title=" الحالة "></i>
+            </label>
+            <!--end::Label-->
+            <div class="d-flex align-items-center mb-3">
+                <div class="form-check m-0 ">
+                    <input class="form-check-input  " type="radio" name="is_available" value="yes" checked>
+                    <label class="form-check-label ms-5" style="margin-right: 20px;">
+                        فعال
+                    </label>
+                </div>
+                <div class="form-check m-0  ms-3" style="margin-right: 30px!important">
+                    <input class="form-check-input  " type="radio" name="is_available" value="no">
+                    <label class="form-check-label ms-5" style="margin-right: 20px;">
+                        غير فعال
+                    </label>
+                </div>
+            </div>
+        </div>
         <!--begin::Input group-->
         <div class="d-flex flex-column mb-2 fv-row col-sm-12">
             <!--begin::Label-->

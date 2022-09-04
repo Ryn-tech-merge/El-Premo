@@ -19,7 +19,7 @@ class ContactController extends Controller
         if ($validator->fails()){
             return apiResponse('',$validator->errors(),'422');
         }
-        $data = $request->only('phone','mail','subject','message');
+        $data = $request->only('user_id','phone','mail','subject','message');
         $contact = Contact::create($data);
         return apiResponse($contact);
 

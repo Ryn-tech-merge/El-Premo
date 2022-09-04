@@ -13,46 +13,120 @@ use App\Models\Brand;
 use App\Models\Contact;
 use App\Models\Product;
 use App\Models\Offer;
+use App\Models\OrderDetails;
+use App\Models\Governorate;
+use App\Models\Setting;
 
 class HomeController extends Controller
 {
-    public function index(){
-//        return 1;
-        $date7 = date('D');
-        $date6 = date('D' ,strtotime('-1day') );
-        $date5 = date('D' ,strtotime('-2day') );
-        $date4 = date('D' ,strtotime('-3day') );
-        $date3 = date('D' ,strtotime('-4day') );
-        $date2 = date('D' ,strtotime('-5day') );
-        $date1 = date('D' ,strtotime('-6day') );
+    public function index(Request $request){
+        $created_from = $request->created_from ? date('Y-m-d',strtotime($request->created_from)):date('Y-m-d' , strtotime('-1 month'));
+        $created_to = $request->created_to ?date('Y-m-d' ,strtotime($request->created_to)):date('Y-m-d' );
 
-        $order7 = Order::where(['status'=>'ended','delivery_date'=> date('Y-m-d')])->count();
-        $order6 = Order::where(['status'=>'ended','delivery_date'=> date('Y-m-d' ,strtotime('-1day') )])->count();
-        $order5 = Order::where(['status'=>'ended','delivery_date'=> date('Y-m-d' ,strtotime('-2day') )])->count();
-        $order4 = Order::where(['status'=>'ended','delivery_date'=> date('Y-m-d' ,strtotime('-3day') )])->count();
-        $order3 = Order::where(['status'=>'ended','delivery_date'=> date('Y-m-d' ,strtotime('-4day') )])->count();
-        $order2 = Order::where(['status'=>'ended','delivery_date'=> date('Y-m-d' ,strtotime('-5day') )])->count();
-        $order1 = Order::where(['status'=>'ended','delivery_date'=> date('Y-m-d' ,strtotime('-6day') )])->count();
+        $chart_day_array = $chart_order_array = [];
+        $chart_order_count = 0;
 
-        $order_count = Order::where('status','!=','waiting')->count();
-        $user_count = User::count();
-        $admin_count = Admin::count();
-        $category_count = Category::count();
-        $brand_count = Brand::count();
-        $contact_count = Contact::count();
-        $product_count = Product::count();
-        $offer_count = Offer::count();
+        //*************** total profit and income chart ******************
+        $details = OrderDetails::where('type','product')->get();
+        $total_profit = $total_income = 0;
+        foreach ($details as $detail){
+            if ($detail->product ){
+                if ($detail->unit_id == $detail->product->sm_unit_id){
+                    $total_income += $detail->amount * $detail->product->sm_unit_price  ;
+                    $total_profit += $detail->amount * ($detail->product->sm_unit_price - $detail->product->purchase_price) ;
+                }elseif ($detail->unit_id == $detail->product->lg_unit_id ){
+                    $total_income += ($detail->amount * $detail->product->lg_sm_amount) *  $detail->product->sm_unit_price   ;
+                    $total_profit += ($detail->amount * $detail->product->lg_sm_amount) * (  $detail->product->sm_unit_price  - $detail->product->purchase_price) ;
+                }
+            }
+        }
 
-        $new_order_count = Order::where('status','new')->count();
-        $on_going_order_count = Order::where('status','on_going')->count();
-        $delivery_order_count = Order::where('status','delivery')->count();
-        $ended_order_count = Order::where('status','ended')->count();
-        $canceled_order_count = Order::where('status','canceled')->count();
+        for($i= 30 ; $i>=0 ; $i--){
+            array_push($chart_day_array , (string)date('d/m',strtotime('-'.$i.'day') ) );
+            $order = Order::where(['status'=>'ended','delivery_date'=> date('Y-m-d' ,strtotime('-'.$i.'day') )])->count();
+            $chart_order_count += $order;
+            array_push($chart_order_array , (string)$order );
+        }
+        //*************** end total profit and income chart ******************
+        //*************** start governorate chart ******************
+//        return [$chart_day_array , $chart_order_array];
+        $governorates = Governorate::whereHas('users')->get();
+        $governorates_array = [];
+        foreach ($governorates as $governorate){
+            $governorate->user_count = User::where('governorate_id',$governorate->id)->whereBetween('created_at',[$created_from,$created_to])->count();
+            if ($governorate->user_count > 0)
+                $governorates_array[] = $governorate;
+        }
+        //*************** end governorate chart ******************
+
+        //*************** start most sell products chart ******************
+        $products = OrderDetails::where('type','product')
+            ->with('product.category','product.brand','product.sm_unit','product.lg_unit')->get();
+        $collection = collect([]);
+        $products->each(function ($item) use ($collection) {
+            $target = $collection->where('product_id', $item->product_id);
+            if ($target->count()==0)
+            {
+                $collection->push($item);
+            }
+        });
+        foreach ($collection as $product){
+            if ($product->product ){
+                $product->count = $product->product->count = OrderDetails::where('product_id', $product->product_id)->count();
+                if ($product->unit_id == $product->product->sm_unit_id){
+                    $product->product->total_income += $product->amount * $product->product->sm_unit_price  ;
+                    $product->product->total_profit += $product->amount * ($product->product->sm_unit_price - $product->product->purchase_price) ;
+                }elseif ($product->unit_id == $product->product->lg_unit_id ){
+                    $product->product->total_income += ($product->amount * $product->product->lg_sm_amount) *  $product->product->sm_unit_price   ;
+                    $product->product->total_profit += ($product->amount * $product->product->lg_sm_amount) * (  $product->product->sm_unit_price  - $product->product->purchase_price) ;
+                }
+            }
+        }
+//        return $collection;
+        $collection = $collection->sortByDesc("count");
+        $arrays = [] ;
+        foreach($collection as $product)
+        {
+            $arrays[] = $product->product;
+        }
+        $most_sell_products =  array_slice( $arrays, 0, 10 );
+
+        //*************** end most sell products chart ******************
+
+        //*************** start most sell client chart ******************
+//        $setting = Setting::first();
+        $most_clients  = User::orderBy('points','desc')->paginate(10);
+        $most_purchase_clients = [];
+        foreach ($most_clients as $client){
+            $client_orders = Order::where(['user_id'=>$client->id,'status'=>'ended']);
+            if ($client_orders->count()>0){
+                $client->total_purchases = $client_orders->sum('total');
+                $client->purchase_num = $client_orders->count();
+                $most_purchase_clients[] = $client;
+            }
+        }
+//        return $most_purchase_clients;
+        //*************** end most sell client chart ******************
+
+        $order_count = Order::where('status','!=','waiting')->whereBetween('created_at',[$created_from,$created_to])->count();
+        $user_count = User::whereBetween('created_at',[$created_from,$created_to])->count();
+        $admin_count = Admin::whereBetween('created_at',[$created_from,$created_to])->count();
+        $category_count = Category::whereBetween('created_at',[$created_from,$created_to])->count();
+        $brand_count = Brand::whereBetween('created_at',[$created_from,$created_to])->count();
+        $contact_count = Contact::whereBetween('created_at',[$created_from,$created_to])->count();
+        $product_count = Product::whereBetween('created_at',[$created_from,$created_to])->count();
+        $offer_count = Offer::whereBetween('created_at',[$created_from,$created_to])->count();
+
+        $new_order_count = Order::whereBetween('created_at',[$created_from,$created_to])->where('status','new')->count();
+        $on_going_order_count = Order::whereBetween('created_at',[$created_from,$created_to])->where('status','on_going')->count();
+        $delivery_order_count = Order::whereBetween('created_at',[$created_from,$created_to])->where('status','delivery')->count();
+        $ended_order_count = Order::whereBetween('created_at',[$created_from,$created_to])->where('status','ended')->count();
+        $canceled_order_count = Order::whereBetween('created_at',[$created_from,$created_to])->where('status','canceled')->count();
 
 //        return $date;
-        return view('Admin.index',
-            compact('order1','order2','order3','order4','order5','order6','order7',
-            'date1','date2','date3','date4','date5','date6','date7','order_count','user_count','admin_count',
+        return view('Admin.index',['created_from'=>$created_from,'created_to'=>$created_to],
+            compact('chart_day_array','chart_order_array','chart_order_count','total_profit','total_income',
+               'most_sell_products' , 'most_purchase_clients' ,'governorates_array' , 'order_count','user_count','admin_count',
             'category_count','brand_count','contact_count','product_count','offer_count','new_order_count',
             'on_going_order_count','delivery_order_count','ended_order_count','canceled_order_count'));
     }

@@ -29,12 +29,8 @@
                             <input name="delivery_days" type="text" value="{{$setting->delivery_days}}" class="form-control numbersOnly" placeholder="رقم التواصل ...">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">هدية لكل</label>
-                            <input name="gift_for" type="text" value="{{$setting->gift_for}}" class="form-control numbersOnly" placeholder="رقم التواصل ...">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">قيمة الهدية</label>
-                            <input name="gift_price" type="text" value="{{$setting->gift_price}}" class="form-control numbersOnly" placeholder="قيمة الهدية ...">
+                            <label class="form-label"> نقاط تسجيل الدخول</label>
+                            <input name="register_gift" type="text" value="{{$setting->register_gift}}" class="form-control numbersOnly" placeholder="هدية تسجيل الدخول ...">
                         </div>
                         <div class="card-footer ">
                             <input type="submit" class="btn btn-success mt-1" value="حفظ">

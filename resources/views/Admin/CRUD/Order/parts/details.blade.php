@@ -30,6 +30,11 @@
                                 <div class="col">
                                     <div class="float-left">
                                         <h4 class="font-weight-bold mb-0 mt-2 text-blue">{{$detail->amount . ' ' . $detail->unit->name}}</h4>
+                                        @if($detail->type == 'product')
+                                            <small class="text-muted">{{$detail->product->price * $detail->amount }} جنيه </small>
+                                        @else
+                                            <small class="text-muted">{{$detail->offer->price * $detail->amount }} جنيه </small>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

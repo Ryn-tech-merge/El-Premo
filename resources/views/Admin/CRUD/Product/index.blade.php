@@ -11,6 +11,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">منتجات البريمو</h3>
+                    @if(in_array(34,admin()->user()->permission_ids)) {
                     <div class="mr-auto pageheader-btn">
                         <a href="#"  id="addBtn" class="btn btn-primary btn-icon text-white">
                                         <span>
@@ -18,6 +19,7 @@
                                         </span> اضافة جديد
                         </a>
                     </div>
+                    @endif
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -39,6 +41,8 @@
                                 <th class="text-white">سعر الوحدة الصغرى</th>
                                 <th class="text-white">سعر الوحدة الكبرى</th>
                                 <th class="text-white">كمية الوحدة الكبرى من الصغرى</th>
+                                <th class="text-white">سعر الشراء</th>
+                                <th class="text-white">الحالة</th>
                                 <th class="text-white">تحكم</th>
                             </tr>
                             </thead>
@@ -120,6 +124,8 @@
             {data: 'min_lg_amount', name: 'min_lg_amount'},
             {data: 'max_lg_amount', name: 'max_lg_amount'},
             {data: 'lg_sm_amount', name: 'lg_sm_amount'},
+            {data: 'purchase_price', name: 'purchase_price'},
+            {data: 'is_available', name: 'is_available'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ];
         //======================== addBtn =============================

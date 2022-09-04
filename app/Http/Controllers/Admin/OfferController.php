@@ -22,16 +22,20 @@ class OfferController extends Controller
             $offers = Offer::latest()->get();
             return Datatables::of($offers)
                 ->addColumn('action', function ($offer) {
-                    return '
+                    $action = '';
+                    if(in_array(36,admin()->user()->permission_ids)) {
+                        $action .= '
                         <button  id="editBtn" class="btn btn-default btn-primary btn-sm mb-2  mb-xl-0 "
                              data-id="' . $offer->id . '" ><i class="fa fa-edit text-white"></i>
-                        </button>
-
+                        </button>';
+                    }
+                    if(in_array(37,admin()->user()->permission_ids)) {
+                        $action .= '
                         <button class="btn btn-default btn-danger btn-sm mb-2 mb-xl-0 delete"
                              data-id="' . $offer->id . '" ><i class="fa fa-trash-o text-white"></i>
-                        </button>
-
-                       ';
+                        </button>';
+                    }
+                    return $action;
 
                 })
                 ->editColumn('image',function ($offer){
@@ -39,6 +43,11 @@ class OfferController extends Controller
                 })
                 ->editColumn('type',function ($offer){
                     return $offer->type=='value'?'قيمة':'نسبة';
+                })
+                ->editColumn('is_available',function ($product){
+                    $status = $product->is_available=='yes' ? 'فعال' :'غير فعال' ;
+                    $color = $product->is_available=='yes' ? 'badge-success' :'badge-danger' ;
+                    return '<span class="badge ' . $color . ' " >'.$status.'</a>';
                 })
                 ->escapeColumns([])
                 ->make(true);
@@ -79,8 +88,10 @@ class OfferController extends Controller
         if ($valedator->fails())
             return response()->json(['messages' => $valedator->errors()->getMessages(), 'success' => 'false']);
 
-        $data = $request->except('product_id','amount');
+        $data = $request->except('product_id','amount','unit_id');
         $data['image']    = 'uploads/offer/'.$this->saveImage($request->image,'uploads/offer');
+        $data['amount']    = $request->offer_amount;
+        unset($data['offer_amount']);
         $offer = Offer::create($data);
         if (count($request->product_id) > 0){
             foreach ($request['product_id'] as $key=>$product){
@@ -88,7 +99,8 @@ class OfferController extends Controller
                 OfferProduct::create([
                     'product_id'   => $product,
                     'offer_id'     => $offer->id,
-                    'amount'       => $request->amount[$key]
+                    'amount'       => $request->amount[$key],
+                    'unit_id'       => $request->unit_id[$key]
                 ]) ;
 
             }
@@ -130,9 +142,7 @@ class OfferController extends Controller
         if ($valedator->fails())
             return response()->json(['messages' => $valedator->errors()->getMessages(), 'success' => 'false']);
 
-
-
-        $data = $request->except('product_id','amount');
+        $data = $request->except('product_id','amount','unit_id');
 
         if ( $request->image && $request->image != null ){
             if (file_exists($offer->getAttributes()['image'])) {
@@ -141,6 +151,8 @@ class OfferController extends Controller
             $data['image']    = 'uploads/offer/'.$this->saveImage($request->image,'uploads/offer');
 
         }
+        $data['amount']    = $request->offer_amount;
+        unset($data['offer_amount']);
         $offer->update($data);
 
         OfferProduct::where('offer_id',$offer->id)->delete();
@@ -151,8 +163,9 @@ class OfferController extends Controller
                     OfferProduct::create([
                         'product_id'   => $product,
                         'offer_id'     => $offer->id,
-                        'amount'       => $request->amount[$key]
-                    ]) ;
+                        'amount'       => $request->amount[$key],
+                        'unit_id'       => $request->unit_id[$key]
+                    ]);
                 }
             }
         }
@@ -173,6 +186,29 @@ class OfferController extends Controller
             [
                 'code' => 200,
                 'message' => 'تم الحذف بنجاح'
+            ]);
+    }
+
+    ##############################################
+    ################ get_product_units #################
+    public function get_product_units(Request $request)
+    {
+        $product = Product::where('id', $request->id)->with('sm_unit')->first();
+        if ($product->sm_unit){
+            $html = '<option value="" selected disabled>اختر وحدة  ...</option>';
+            $html .= '<option value="' . $product->sm_unit->id . '">' . $product->sm_unit->name . '</option>';
+            if ($product->lg_unit){
+                $html .= '<option value="' . $product->lg_unit->id . '">' . $product->lg_unit->name . '</option>';
+            }
+        }
+        else{
+            $html = '<option value="" selected disabled> لا يوجد وحدات </option>';
+        }
+//        return $category;
+        return response()->json(
+            [
+                'success' => 'true',
+                'html' => $html
             ]);
     }
 

@@ -14,7 +14,7 @@ class NotificationController extends Controller
 {
     public function index(Request $request)
     {
-        $users = User::where('block', 'no')->get();
+        $users = User::where(['block'=> 'no','is_active'=>'yes'])->get();
         return view('Admin.CRUD.Notification.index',compact('users'));
     }
 

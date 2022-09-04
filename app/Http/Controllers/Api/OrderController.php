@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Setting;
 use App\Models\OrderDetails;
 use App\Models\Product;
+use App\Models\CouponUser;
 use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
@@ -42,15 +43,16 @@ class OrderController extends Controller
         $validator_array = [];
 
         $order = Order::where(['user_id'=>Auth::guard('user_api')->user()->id , 'status'=>'waiting'])
-            ->with('order_details.product','order_details.offer','order_details.unit','user')
+            ->with('order_details.product','order_details.offer','order_details.unit','user.governorate','user.city')
             ->first();
 
             //####################  amount validation ###########################
             foreach ($request->details as $key=>$detail) {
                 if ($detail['type'] == 'product') {
                     $product = Product::where('id', $detail['product_id'])->first();
-
-                    $previous_detail = OrderDetails::where(['order_id'=>$order->id,'product_id'=>$detail['product_id'],'unit_id' =>$detail['unit_id'],'type' =>$detail['type'] ])->first();
+                    $previous_detail = '';
+                    if ($order)
+                        $previous_detail = OrderDetails::where(['order_id'=>$order->id,'product_id'=>$detail['product_id'],'unit_id' =>$detail['unit_id'],'type' =>$detail['type'] ])->first();
 
                     if ($previous_detail){
                         $amount = $detail['amount'] + $previous_detail->amount ;
@@ -77,19 +79,21 @@ class OrderController extends Controller
                 return apiResponse('',$validator_array,'422');
             }
             //####################  end amount validation ###########################
-
         $data = [];
         if ($order){
             $data['price'] = $order->price + $request->price;
             $data['total'] = $order->total + $request->total;
+            $data['coupon_id'] = $request->coupon_id;
             $data['discount'] = $order->discount + $request->discount;
+            CouponUser::where(['coupon_id'=>$request->coupon_id,'user_id'=>Auth::guard('user_api')->user()->id])->update(['is_paid'=>'yes']);
 
             $order->update($data);
         }else{
-            $data = $request->only('price','total','discount');
+            $data = $request->only('coupon_id','price','total','discount');
             $setting = Setting::first();
             $data['delivery_date'] = date('Y-m-d ' ,strtotime('+'.$setting->delivery_days.'day') ) ;
             $data['user_id'] = Auth::guard('user_api')->user()->id ;
+            CouponUser::where(['coupon_id'=>$request->coupon_id,'user_id'=>Auth::guard('user_api')->user()->id])->update(['is_paid'=>'yes']);
 
             $order = Order::create($data);
         }
@@ -123,7 +127,7 @@ class OrderController extends Controller
             }
         }
 
-        $order = Order::where('id',$order->id)->with('order_details.product','order_details.offer','order_details.unit','user')->first();
+        $order = Order::where('id',$order->id)->with('order_details.product','order_details.offer','order_details.unit','user.governorate','user.city')->first();
 
         return apiResponse($order);
     }
@@ -131,7 +135,7 @@ class OrderController extends Controller
     public function current_orders(Request $request){
         $order = Order::where('user_id',Auth::guard('user_api')->user()->id)
             ->whereIn('status',['waiting','new','on_going','delivery'])
-            ->with('order_details.product','order_details.offer','order_details.unit','user')
+            ->with('order_details.product','order_details.offer','order_details.unit','user.governorate','user.city')
             ->latest()->get();
         return apiResponse($order);
     }
@@ -139,14 +143,14 @@ class OrderController extends Controller
     public function previous_orders(Request $request){
         $order = Order::where('user_id',Auth::guard('user_api')->user()->id)
             ->whereIn('status',['ended','canceled'])
-            ->with('order_details.product','order_details.offer','order_details.unit','user')
+            ->with('order_details.product','order_details.offer','order_details.unit','user.governorate','user.city')
             ->latest()->get();
         return apiResponse($order);
     }
     /*================================================*/
     public function order_details(Request $request){
         $order = Order::where('id',$request->id)
-            ->with('order_details.product','order_details.offer','order_details.unit','user')
+            ->with('order_details.product','order_details.offer','order_details.unit','user.governorate','user.city')
             ->first();
 
 //        $order->setRelation('order_details',
@@ -164,7 +168,7 @@ class OrderController extends Controller
     /*================================================*/
 //    public function order_details_products(Request $request){
 //        $order = Order::where('id',$request->id)
-//            ->with('order_details.product','order_details.offer','order_details.unit','user')
+//            ->with('order_details.product','order_details.offer','order_details.unit','user.governorate','user.city')
 //            ->first();
 //        return apiResponse($order);
 //    }
@@ -214,7 +218,8 @@ class OrderController extends Controller
 
         //####################  end validation ###########################
 
-        $data = $request->only('price','total','discount');
+        $data = $request->only('coupon_id','price','total','discount');
+        CouponUser::where(['coupon_id'=>$request->coupon_id,'user_id'=>Auth::guard('user_api')->user()->id])->update(['is_paid'=>'yes']);
         Order::where('id',$request->id)->update($data);
 
         OrderDetails::where('order_id',$request->id)->delete();
@@ -228,7 +233,7 @@ class OrderController extends Controller
             $new_detail->save();
         }
 
-        $order = Order::where('id',$request->id)->with('order_details.product','order_details.offer','order_details.unit','user')->first();
+        $order = Order::where('id',$request->id)->with('order_details.product','order_details.offer','order_details.unit','user.governorate','user.city')->first();
         return apiResponse($order);
     }
     /*================================================*/
@@ -242,7 +247,7 @@ class OrderController extends Controller
         $data = $request->only('id');
         $data['status'] = 'canceled';
         $order =  Order::where('id',$request->id)
-            ->with('order_details.product','order_details.offer','order_details.unit','user')
+            ->with('order_details.product','order_details.offer','order_details.unit','user.governorate','user.city')
             ->first();
         $order->update($data);
 
@@ -264,8 +269,15 @@ class OrderController extends Controller
             }
         }
 
-
-
         return apiResponse($order);
+    }
+    /*================================================*/
+    public function accept_order_schedule(){
+        $setting = Setting::first();
+        if (date('H' ,strtotime('+2hours') ) == date('H' ,strtotime($setting->order_time))){
+            Order::where('status','waiting')->update(['status'=>'new']);
+            return apiResponse(null,'done successfully');
+        }
+        return apiResponse(null,'date does not come yet');
     }
 }

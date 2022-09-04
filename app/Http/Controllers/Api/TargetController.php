@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Target;
 use App\Models\Wallet;
+use App\Models\User;
 
 class TargetController extends Controller
 {
@@ -16,7 +17,7 @@ class TargetController extends Controller
         if (!$wallet)
             return apiResponse('','purchase first please');
 
-        $user = Auth::guard('user_api')->user();
+        $user = User::where('id',Auth::guard('user_api')->user()->id)->with('governorate','city')->first();
         $targets = Target::orderBy('gifts_for')->get();
         foreach ($targets as $target){
             if ($user->points > $target->gifts_for)

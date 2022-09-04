@@ -15,5 +15,8 @@ class Brand extends Model
     public function getImageAttribute(){
         return  get_file($this->attributes['image']);
     }
+    public function categoryBrands(){
+        return $this->hasMany(CategoryBrand::class,'brand_id');
+    }
     
 }

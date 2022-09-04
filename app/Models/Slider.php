@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Slider extends Model
 {
     protected $guarded = [];
+    protected $appends = ['offer_id','brand_id'];
+    
 
     public function getImageAttribute(){
         return  get_file($this->attributes['image']);
@@ -20,6 +22,14 @@ class Slider extends Model
     }
     public function brand(){
         return $this->belongsTo(Brand::class,'product_id');
+    }
+    
+    
+    public function getBrandIdAttribute(){
+        return $this->attributes['product_id'];
+    }
+    public function getOfferIdAttribute(){
+        return $this->attributes['product_id'];
     }
 
 }

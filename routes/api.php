@@ -20,6 +20,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('cities','CityController@cities');
+Route::get('governorates','CityController@governorates');
 Route::post('login','AuthController@login');
 Route::post('register','AuthController@register');
 /* ---------------------- home -------------------*/
@@ -37,7 +39,8 @@ Route::get('one_offer','OfferController@one_offer');
 
 /* ---------------------- contact -------------------*/
 Route::post('contact_us','ContactController@contact_us');
-
+/* ---------------------- accept_order -------------------*/
+Route::get('accept_order_schedule','OrderController@accept_order_schedule');
 
 
 Route::group(['middleware'=>'all_guards:user_api'],function(){
@@ -48,6 +51,8 @@ Route::group(['middleware'=>'all_guards:user_api'],function(){
 
     /* ---------------------- notifications -------------------*/
     Route::get('notifications','NotificationController@notifications');
+    /* ---------------------- coupon -------------------*/
+    Route::get('coupon','CouponController@coupon');
 
     /* ---------------------- orders -------------------*/
     Route::get('waiting_order_count','OrderController@waiting_order_count');

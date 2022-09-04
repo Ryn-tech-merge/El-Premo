@@ -631,7 +631,7 @@
         refresh: function () {
             this.init();
         },
-		
+
         destroy: function () {
             this.$el.show();
             this.$parent.remove();
@@ -742,10 +742,10 @@
         filterAcceptOnEnter: false,
         hideOptgroupCheckboxes: false,
 
-        selectAllText: 'Select all',
-        allSelected: 'All selected',
-        countSelected: '# of % selected',
-        noMatchesFound: 'No matches found',
+        selectAllText: 'تحديد الكل',
+        allSelected: 'تم تحديد الكل',
+        countSelected: '# من % محدد ',
+        noMatchesFound: 'لا يوجد بيانات مطابقة',
 
         styler: function () {
             return false;

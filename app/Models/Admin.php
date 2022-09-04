@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\AdminPermission;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -28,6 +29,13 @@ class Admin extends Authenticatable
 
     protected $table='admins';
 
-
+    public function admin_permissions(){
+        return $this->hasMany(AdminPermission::class,'admin_id');
+    }
+    protected $appends = ['permission_ids'];
+    public function getPermissionidsAttribute()
+    {
+        return $this->admin_permissions()->pluck('permission_id')->toArray();
+    }
 
 }

@@ -4,7 +4,7 @@
     @method('PUT')
     <div class="row mt-0">
         <!--begin::Input group-->
-        <div class="d-flex flex-column mb-2 fv-row col-sm-12 mt-0">
+        <div class="d-flex flex-column mb-2 fv-row col-sm-6 mt-0">
             <label class="d-flex align-items-center fs-6 fw-bold form-label ">
                 <span class="required">الإسم </span>
                 <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="الإسم"></i>
@@ -12,9 +12,17 @@
             <input type="text" class="form-control form-control-solid" placeholder="الإسم" name="name" value="{{$offer->name}}"/>
         </div>
         <!--end::Input group-->
-
         <!--begin::Input group-->
-        <div class="d-flex flex-column mb-2 fv-row col-sm-12 mt-0">
+        <div class="d-flex flex-column mb-2 fv-row col-sm-6 mt-0">
+            <label class="d-flex align-items-center fs-6 fw-bold form-label ">
+                <span class="required">الكمية </span>
+                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="الكمية"></i>
+            </label>
+            <input type="text" class="form-control form-control-solid numbersOnly" placeholder="الكمية" name="offer_amount" value="{{$offer->amount}}"/>
+        </div>
+        <!--end::Input group-->
+        <!--begin::Input group-->
+        <div class="d-flex flex-column mb-2 fv-row col-sm-6 mt-0 ">
             <!--begin::Label-->
             <label class="d-flex align-items-center fs-6 fw-bold form-label ">
                 <span class="required">النوع </span>
@@ -23,23 +31,45 @@
             <!--end::Label-->
             <div class="d-flex align-items-center mb-3">
                 <div class="form-check m-0 ">
-                    <input class="form-check-input type price_change" type="radio" name="type" value="value" {{$offer->type == 'value' ? 'checked' :'' }} >
+                    <input class="form-check-input " type="radio" name="type" value="value" {{$offer->type == 'value' ? 'checked' :'' }} >
                     <label class="form-check-label ms-5" style="margin-right: 20px;">
                         قيمة
                     </label>
                 </div>
                 <div class="form-check m-0  ms-3" style="margin-right: 30px!important">
-                    <input class="form-check-input type price_change" type="radio" name="type" value="percentage" {{$offer->type == 'percentage' ? 'checked' :'' }}>
+                    <input class="form-check-input " type="radio" name="type" value="percentage" {{$offer->type == 'percentage' ? 'checked' :'' }}>
                     <label class="form-check-label ms-5" style="margin-right: 20px;">
                         نسبة
                     </label>
                 </div>
             </div>
         </div>
-
+        <!--begin::Input group-->
+        <div class="d-flex flex-column mb-2 fv-row col-sm-6 mt-0 ">
+            <!--begin::Label-->
+            <label class="d-flex align-items-center fs-6 fw-bold form-label ">
+                <span class="required">الحالة </span>
+                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title=" الحالة "></i>
+            </label>
+            <!--end::Label-->
+            <div class="d-flex align-items-center mb-3">
+                <div class="form-check m-0 ">
+                    <input class="form-check-input " type="radio" name="is_available" value="yes" {{$offer->is_available == 'yes' ? 'checked' :'' }} >
+                    <label class="form-check-label ms-5" style="margin-right: 20px;">
+                        فعال
+                    </label>
+                </div>
+                <div class="form-check m-0  ms-3" style="margin-right: 30px!important">
+                    <input class="form-check-input " type="radio" name="is_available" value="no" {{$offer->is_available == 'no' ? 'checked' :'' }} >
+                    <label class="form-check-label ms-5" style="margin-right: 20px;">
+                        غير فعال
+                    </label>
+                </div>
+            </div>
+        </div>
 
         <!--begin::Input group-->
-        <div class=" mb-2 fv-row col-sm-12 mt-0" id="value_div">
+        <div class=" mb-2 fv-row col-sm-12 mt-0" id="value_div" style="{{$offer->type == 'percentage'?'display: none':''}}">
             <label class="d-flex align-items-center fs-6 fw-bold form-label ">
                 <span >القيمة  </span>
                 {{--                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="القيمة "></i>--}}
@@ -48,7 +78,7 @@
         </div>
         <!--end::Input group-->
         <!--begin::Input group-->
-        <div class=" mb-2 fv-row col-sm-12 mt-0" id="percentage_div" style="display: none">
+        <div class=" mb-2 fv-row col-sm-12 mt-0" id="percentage_div" style="{{$offer->type == 'value'?'display: none':''}}">
             <label class="d-flex align-items-center fs-6 fw-bold form-label ">
                 <span>النسبة  </span>
                 {{--                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="النسبة "></i>--}}
@@ -107,6 +137,7 @@
                     <tr>
                         <th>#</th>
                         <th>المنتج</th>
+                        <th>الوحدة</th>
                         <th>الكمية</th>
                         <th>
                             <a class="btn btn-info add_record " data-added="0"><i class="fa fa-plus"></i></a>
@@ -118,11 +149,20 @@
                     <tr id="rec-{{$key+1}}">
                         <td><span class="sn">{{$key+1}}</span>.</td>
                         <td>
-                            <select name="product_id[]" class="form-control">
+                            <select name="product_id[]" class="form-control product_change">
                                 <option value=""> اختر منتج  </option>
                                 @foreach($products as $product)
                                     <option {{$one_product->product_id == $product->id ? 'selected' :''}} value="{{$product->id}}"> {{$product->name}}  </option>
                                 @endforeach
+                            </select>
+                        </td>
+                        <td>
+                            <select name="unit_id[]"  class="form-control unit_change">
+                                <option value="" disabled selected> اختر وحدة  </option>
+                                <option value="{{$one_product->product->sm_unit->id}}" {{$one_product->product->sm_unit_id == $one_product->unit_id ? 'selected' :''}} >{{$one_product->product->sm_unit->name}}</option>
+                                @if($one_product->product->lg_unit)
+                                    <option value="{{$one_product->product->lg_unit->id}}" {{$one_product->product->lg_unit->id == $one_product->unit_id ? 'selected' :''}}>{{$one_product->product->lg_unit->name}}</option>
+                                @endif
                             </select>
                         </td>
                         <td>
@@ -162,11 +202,17 @@
         <tr id="">
             <td><span class="sn"></span>.</td>
             <td>
-                <select name="product_id[]" class="form-control">
+                <select name="product_id[]" class="form-control product_change">
                     <option value=""> اختر منتج  </option>
                     @foreach($products as $product)
                         <option value="{{$product->id}}"> {{$product->name}}  </option>
                     @endforeach
+                </select>
+            </td>
+            <td>
+                <select name="unit_id[]"  class="form-control unit_change">
+                    <option value="" disabled selected> اختر وحدة  </option>
+
                 </select>
             </td>
             <td>
@@ -191,7 +237,7 @@
 <script>
     $(document).on('keyup change',".price_change",function (e) {
         e.preventDefault();
-
+        // alert(1)
         var type = $('.type:checked').val() ;
         var value = $('#value').val() || 0;
         var percentage = $('#percentage').val() || 0;
@@ -235,4 +281,56 @@
     });
 </script>
 
+
+<script>
+    $(document).on('change',".product_change",function (e) {
+        e.preventDefault();
+        var id = $(this).val();
+        var url = "{{route('get_product_units')}}?id="+id;
+        var td = $(this)
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (data) {
+                window.setTimeout(function () {
+                    if (data.success === 'true') {
+                        td.parent('td').next('td').children('.unit_change').html(data.html);
+                    }else {
+                        var messages = Object.values(data.messages);
+                        $( messages ).each(function(index, message ) {
+                            my_toaster(message,'error')
+                        });
+                    }
+                }, 1000);
+
+            },
+            error: function (data) {
+                console.log(data)
+                if (data.status === 500) {
+                    my_toaster('هناك خطأ ما','error')
+                }
+
+                if (data.status === 422) {
+                    var errors = $.parseJSON(data.responseText);
+                    $.each(errors, function (key, value) {
+                        if ($.isPlainObject(value)) {
+                            $.each(value, function (key, value) {
+                                my_toaster(value,'error')
+                            });
+
+                        } else {
+
+                        }
+                    });
+                }
+
+            },//end error method
+
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    });
+</script>
 

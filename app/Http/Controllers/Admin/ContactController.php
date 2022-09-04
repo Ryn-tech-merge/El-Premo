@@ -67,6 +67,9 @@ class ContactController extends Controller
         $notification->title = 'تم الرد على رسالتك';
         $notification->message = $request->message;
         $notification->save();
+
+        firebase_notification($notification->title,$notification->message,$notification->user_id);
+
         return response()->json(
             [
                 'success' => 'true',

@@ -328,5 +328,38 @@ if (!function_exists('phone_codes')) {
             return $token;
         }
     }
+    //===================  firebase_notification ===========================
+    if (!function_exists('firebase_notification')) {
+        function  firebase_notification($title,$body,$user_id) {
+
+            $SERVER_API_KEY = '';
+//            $SERVER_API_KEY =  'AAAAl2HgII8:APA91bFvV7Fwtx5zXe9X-TgeDrwZ0PJGTuZHbiIU9Uyq2I5rR0vxhdilnYT4kpcCPYN9WM-dnT9BifmRdGgzWsiFX0Th5bB3J8qZcXlD06c5hfgaX1NepFdSdljNU4z7_7StPq3omss5';
+            $tokens = App\Models\PhoneToken::where('user_id',$user_id)->pluck('phone_token')->toArray();
+
+            $data = [
+                "registration_ids" => $tokens,
+                "notification" => [
+                    "title" =>$title,
+                    "body" => $body,
+//                    "sound"=> "default" // required for sound on ios required for sound on ios
+                ],
+            ];
+            $dataString = json_encode($data);
+            $headers = [
+                'Authorization: key=' . $SERVER_API_KEY,
+                'Content-Type: application/json',
+            ];
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
+            $response = curl_exec($ch);
+
+        }
+
+    }
 
 }

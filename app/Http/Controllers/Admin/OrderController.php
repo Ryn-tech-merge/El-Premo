@@ -222,6 +222,8 @@ class OrderController extends Controller
         $notification->message = 'طلبك رقم ' . $order->id . ' ' . $this->orderStatus($order->status)['status'];
         $notification->save();
 
+        firebase_notification($notification->title,$notification->message,$order->user_id);
+        
         return response()->json(
             [
                 'success' => 'true',

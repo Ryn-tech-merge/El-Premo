@@ -33,8 +33,8 @@
                                 <th class="text-white">النوع </th>
                                 <th class="text-white">القيمة </th>
                                 <th class="text-white">النسبة </th>
-                                <th class="text-white">اقل سعر </th>
-                                <th class="text-white">اعلى سعر </th>
+                                <th class="text-white">الحد الادنى للفاتورة </th>
+                                <th class="text-white">الحد الاقصى للخصم </th>
                                 <th class="text-white">الحالة</th>
                                 <th class="text-white">تحكم</th>
                             </tr>
@@ -87,7 +87,7 @@
 
                     </div>
                     <div class=" ">
-                        <button type="reset" data-dismiss="modal" class="btn btn-light me-3 " style="width: 100px">غلق</button>
+                        <button class="btn btn-light me-3 close_model" style="width: 100px">غلق</button>
                     </div>
                 </div>
             </div>

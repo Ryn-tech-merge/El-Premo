@@ -145,15 +145,13 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 @include('layouts.admin.inc.toaster')
 
-{{--=================== tooltip ==============================--}}
-{{--<script type="text/javascript" src="https://unpkg.com/@popperjs/core@2"></script>--}}
-{{--<script>--}}
-{{--    $(function () {--}}
-{{--        $('[data-toggle="tooltip"]').tooltip()--}}
-{{--    })--}}
-{{--    $('.btn').tooltip('show')--}}
-
-{{--</script>--}}
+{{--=================== close_model ==============================--}}
+<script>
+    $('.close_model').click(function (e) {
+        e.preventDefault();
+        $('#Modal').modal('hide');
+    })
+</script>
 
 
 

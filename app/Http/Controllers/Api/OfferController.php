@@ -35,7 +35,7 @@ class OfferController extends Controller
             'id'=>'required',
         ]);
         if ($validator->fails()){
-            return apiResponse('',$validator->errors(),'422');
+            return apiResponse(null,$validator->errors(),'422');
         }
         $data = Offer::where('id',$request->id)
             ->with('offerProducts.unit','offerProducts.product.category','offerProducts.product.brand','offerProducts.product.sm_unit','offerProducts.product.lg_unit')

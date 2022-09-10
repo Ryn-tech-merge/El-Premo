@@ -198,12 +198,13 @@
         })
     </script>
 
-{{--<script type="text/javascript">--}}
-{{--    $(document).ready(function () {--}}
-{{--        $('.card-options-collapse').click();--}}
-{{--    })--}}
-{{--</script>--}}
 
     <script src="{{url('admin')}}/assets/js/select2.js"></script>
     <script src="{{url('admin')}}/assets/plugins/select2/select2.full.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.card-options-collapse').click();
+        })
+    </script>
 @endpush

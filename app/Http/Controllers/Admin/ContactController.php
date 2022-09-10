@@ -34,6 +34,10 @@ class ContactController extends Controller
                             </div>';
                     }
                 })
+                ->addColumn('user', function ($contact) {
+                    if (!$contact->user) return '';
+                    return '<a href="'.url("admin/user_profile",$contact->user->id).'" class="text-bold cursor-pointer" >'.$contact->user->name ?? $contact->user->id . " ضيف رقم  " .'</a>';
+                })
                 ->escapeColumns([])
                 ->make(true);
         }

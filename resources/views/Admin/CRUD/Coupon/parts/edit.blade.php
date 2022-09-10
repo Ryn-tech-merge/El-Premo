@@ -1,4 +1,10 @@
 <!--begin::Form-->
+<link rel="stylesheet" href="{{url('admin')}}/assets/plugins/multipleselect/multiple-select.css">
+<style>
+    .ms-drop .multiple {
+        width: 125px !important;
+    }
+</style>
 <form id="form" enctype="multipart/form-data" method="POST" action="{{route('coupons.update',$coupon->id)}}">
     @csrf
     @method('PUT')
@@ -119,24 +125,29 @@
         <div class="d-flex flex-column mb-2 fv-row col-sm-12 mt-3">
             <div class="form-group">
                 <label >المستخدمين</label>
-                <div class="form-group form-elements m-0 my-2">
-                    <div class="custom-controls-stacked ">
-                        <label class="custom-control custom-checkbox ">
-                            <input type="checkbox" class="custom-control-input"  id="checkAll" >
-                            <span class="custom-control-label " style="font-weight: bold"> تحديد الكل </span>
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group form-elements m-0">
-                    <div class="custom-controls-stacked row">
-                        @foreach($users as $user)
-                            <label class="custom-control custom-checkbox " style="width: 25%">
-                                <input type="checkbox" {{in_array($user->id,$coupon_users)?'checked':'' }} {{in_array($user->id,$coupon_paid_users)?'disabled':'' }}  class="custom-control-input" name="users[]" value="{{$user->id}}" >
-                                <span class="custom-control-label">{{$user->name ?? 'ضيف رقم '.$user->id}}</span>
-                            </label>
-                        @endforeach
-                    </div>
-                </div>
+                <select multiple="multiple" name="users[]" class="group-filter my-2">
+                    @foreach($users as $user)
+                        <option value="{{$user->id}}" {{in_array($user->id,$coupon_users)?'selected':'' }} {{in_array($user->id,$coupon_paid_users)?'disabled':'' }} >{{$user->name ?? 'ضيف رقم '.$user->id}}</option>
+                    @endforeach
+                </select>
+{{--                <div class="form-group form-elements m-0 my-2">--}}
+{{--                    <div class="custom-controls-stacked ">--}}
+{{--                        <label class="custom-control custom-checkbox ">--}}
+{{--                            <input type="checkbox" class="custom-control-input"  id="checkAll" >--}}
+{{--                            <span class="custom-control-label " style="font-weight: bold"> تحديد الكل </span>--}}
+{{--                        </label>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--                <div class="form-group form-elements m-0">--}}
+{{--                    <div class="custom-controls-stacked row">--}}
+{{--                        @foreach($users as $user)--}}
+{{--                            <label class="custom-control custom-checkbox " style="width: 25%">--}}
+{{--                                <input type="checkbox" {{in_array($user->id,$coupon_users)?'checked':'' }} {{in_array($user->id,$coupon_paid_users)?'disabled':'' }}  class="custom-control-input" name="users[]" value="{{$user->id}}" >--}}
+{{--                                <span class="custom-control-label">{{$user->name ?? 'ضيف رقم '.$user->id}}</span>--}}
+{{--                            </label>--}}
+{{--                        @endforeach--}}
+{{--                    </div>--}}
+{{--                </div>--}}
 
             </div>
         </div>
@@ -162,8 +173,12 @@
     });
 </script>
 
-<script>
-    $("#checkAll").click(function(){
-        $('input:checkbox').not(this).prop('checked', this.checked);
-    });
-</script>
+{{--<script>--}}
+{{--    $("#checkAll").click(function(){--}}
+{{--        $('input:checkbox').not(this).prop('checked', this.checked);--}}
+{{--    });--}}
+{{--</script>--}}
+
+<!-- INTERNAL MULTI SELECT JS -->
+<script src="{{url('admin')}}/assets/plugins/multipleselect/multiple-select.js"></script>
+<script src="{{url('admin')}}/assets/plugins/multipleselect/multi-select.js"></script>

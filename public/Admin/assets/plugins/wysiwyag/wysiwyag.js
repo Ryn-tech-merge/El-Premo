@@ -1,3 +1,6 @@
 (function($) {
-	$('.content').richText();
+    $('.content').richText();
+})(jQuery);
+(function($) {
+    $('.content1').richText();
 })(jQuery);

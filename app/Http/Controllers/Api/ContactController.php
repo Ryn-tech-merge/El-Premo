@@ -17,7 +17,7 @@ class ContactController extends Controller
             'message'=>'required',
         ]);
         if ($validator->fails()){
-            return apiResponse('',$validator->errors(),'422');
+            return apiResponse(null,$validator->errors(),'422');
         }
         $data = $request->only('user_id','phone','mail','subject','message');
         $contact = Contact::create($data);

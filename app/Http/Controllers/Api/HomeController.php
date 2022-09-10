@@ -8,9 +8,11 @@ use App\Models\Slider;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\OrderDetails;
+use App\Http\Traits\ProductTrait;
 
 class HomeController extends Controller
 {
+    use ProductTrait;
     public function home(Request $request){
         $data = [];
         //////////////////// slider
@@ -68,6 +70,7 @@ class HomeController extends Controller
 //            $data['products'] =  paginateResponse($data['products']);
 //        }
         $data['products'] = array_slice( $arrays, 0, 10 );
+        $data['products'] = $this->get_products_max_sm_amount($data['products']);
 
 
         return apiResponse($data);

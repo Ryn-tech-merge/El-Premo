@@ -16,4 +16,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function (){
     return redirect('admin/login');
 })->name('welcome');
+// ****************** web view *****************************
+Route::get('terms','WebView\TermsController@terms')->name('terms');
+Route::get('privacy','WebView\TermsController@privacy')->name('privacy');
+
+
 

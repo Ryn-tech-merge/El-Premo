@@ -41,6 +41,8 @@ Route::get('one_offer','OfferController@one_offer');
 Route::post('contact_us','ContactController@contact_us');
 /* ---------------------- accept_order -------------------*/
 Route::get('accept_order_schedule','OrderController@accept_order_schedule');
+/* ---------------------- setting -------------------*/
+Route::get('setting','SettingController@setting');
 
 
 Route::group(['middleware'=>'all_guards:user_api'],function(){
@@ -53,6 +55,8 @@ Route::group(['middleware'=>'all_guards:user_api'],function(){
     Route::get('notifications','NotificationController@notifications');
     /* ---------------------- coupon -------------------*/
     Route::get('coupon','CouponController@coupon');
+    Route::get('current_coupons','CouponController@current_coupons');
+    Route::get('previous_coupons','CouponController@previous_coupons');
 
     /* ---------------------- orders -------------------*/
     Route::get('waiting_order_count','OrderController@waiting_order_count');
@@ -68,6 +72,13 @@ Route::group(['middleware'=>'all_guards:user_api'],function(){
     Route::get('targets','TargetController@targets');
     /* ---------------------- wallet -------------------*/
     Route::get('wallet','WalletController@wallet');
+
+
+    /* ---------------------- cart -------------------*/
+    Route::get('get_cart','CartController@get_cart');
+    Route::post('add_cart','CartController@add_cart');
+    Route::post('update_cart','CartController@update_cart');
+    Route::post('delete_cart','CartController@delete_cart');
 
 
 });

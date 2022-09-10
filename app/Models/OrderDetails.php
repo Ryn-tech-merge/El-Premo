@@ -17,4 +17,7 @@ class OrderDetails extends Model
     public function unit(){
         return $this->belongsTo(Unit::class,'unit_id');
     }
+    public function order(){
+        return $this->belongsTo(Order::class,'order_id');
+    }
 }

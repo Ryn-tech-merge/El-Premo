@@ -11,12 +11,40 @@ use App\Models\CouponUser;
 
 class CouponController extends Controller
 {
+    public function current_coupons(Request $request){
+        $coupons = Coupon::where(['is_available'=>'yes'])
+           ->where(function ($query){
+                $query->where('start_date','<=',date('Y-m-d'))
+                    ->orwhere('start_date',null);
+            })
+            ->where(function ($query){
+                $query->where('end_date','>=',date('Y-m-d'))
+                    ->orwhere('end_date',null);
+            })
+            ->whereHas('coupon_users',function($query3){
+                $query3->where('user_id',Auth::guard('user_api')->user()->id)->where('is_paid','no');
+            })
+            ->get();
+
+            return apiResponse($coupons);
+
+    }
+    //======================================================================
+    public function previous_coupons(Request $request){
+        $coupons = Coupon::whereHas('coupon_users',function($query){
+                $query->where('user_id',Auth::guard('user_api')->user()->id)->where('is_paid','yes');
+            })->get();
+
+        return apiResponse($coupons);
+
+    }
+    //======================================================================
     public function coupon(Request $request){
         $validator = Validator::make($request->all(),[
             'code'=>'required',
         ]);
         if ($validator->fails()){
-            return apiResponse('',$validator->errors(),'422');
+            return apiResponse(null,$validator->errors(),'422');
         }
 
         $coupon = Coupon::where(['is_available'=>'yes','code'=>$request->code])
@@ -36,13 +64,13 @@ class CouponController extends Controller
                 if ($coupon_user->is_paid == 'no')
                     return apiResponse($coupon);
                 else
-                    return apiResponse('','coupon is used before from the user',411);
+                    return apiResponse(null,'coupon is used before from the user',411);
             }else{
-                return apiResponse('','coupon is not allowed for this user',410);
+                return apiResponse(null,'coupon is not allowed for this user',410);
             }
         }else{
-            return apiResponse('','coupon is wrong',409);
+            return apiResponse(null,'coupon is wrong',409);
         }
-      
+
     }
 }

@@ -10,6 +10,7 @@ use App\Models\Setting;
 use App\Models\OrderDetails;
 use App\Models\Product;
 use App\Models\CouponUser;
+use App\Models\Cart;
 use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
@@ -36,7 +37,7 @@ class OrderController extends Controller
             "details.*.amount"      => "required",
         ]);
         if ($validator->fails()){
-            return apiResponse('',$validator->errors(),'422');
+            return apiResponse(null,$validator->errors(),'422');
         }
 
         //####################  end validation ###########################
@@ -50,6 +51,17 @@ class OrderController extends Controller
             foreach ($request->details as $key=>$detail) {
                 if ($detail['type'] == 'product') {
                     $product = Product::where('id', $detail['product_id'])->first();
+                    //*************** stock validation ###########################
+                    if ($product->amount < $product->max_sm_amount){
+                        $product->max_sm_amount = $product->amount;
+                    }
+                    $lg_amount = $product->amount / $product->lg_sm_amount;
+                    if ( $lg_amount < $product->max_lg_amount) {
+                        $product->max_lg_amount = $lg_amount;
+                    }
+
+                    //*************** end stock validation ###########################
+
                     $previous_detail = '';
                     if ($order)
                         $previous_detail = OrderDetails::where(['order_id'=>$order->id,'product_id'=>$detail['product_id'],'unit_id' =>$detail['unit_id'],'type' =>$detail['type'] ])->first();
@@ -76,7 +88,7 @@ class OrderController extends Controller
             }
 
             if ($validator_array != []){
-                return apiResponse('',$validator_array,'422');
+                return apiResponse(null,$validator_array,'422');
             }
             //####################  end amount validation ###########################
         $data = [];
@@ -126,7 +138,7 @@ class OrderController extends Controller
                 $new_detail->offer->update(['amount' => $new_detail->offer->amount - $detail['amount']]);
             }
         }
-
+        Cart::where('user_id',Auth::guard('user_api')->user()->id)->delete();
         $order = Order::where('id',$order->id)->with('order_details.product','order_details.offer','order_details.unit','user.governorate','user.city')->first();
 
         return apiResponse($order);
@@ -186,7 +198,7 @@ class OrderController extends Controller
             "details.*.amount"      => "required",
         ]);
         if ($validator->fails()){
-            return apiResponse('',$validator->errors(),'422');
+            return apiResponse(null,$validator->errors(),'422');
         }
 
 
@@ -195,6 +207,15 @@ class OrderController extends Controller
             if ($detail['type'] == 'product') {
                 $product = Product::where('id', $detail['product_id'])->first();
                 $amount = $detail['amount'] ;
+                //*************** stock validation ###########################
+                if ($product->amount < $product->max_sm_amount){
+                    $product->max_sm_amount = $product->amount;
+                }
+                $lg_amount = $product->amount / $product->lg_sm_amount;
+                if ( $lg_amount < $product->max_lg_amount) {
+                    $product->max_lg_amount = $lg_amount;
+                }
+                //*************** end stock validation ###########################
 
                 if ($detail['unit_id'] == $product['sm_unit_id']) {
                     if ($amount  < $product->min_sm_amount)
@@ -213,7 +234,7 @@ class OrderController extends Controller
         }
 
         if ($validator_array != []){
-            return apiResponse('',$validator_array,'422');
+            return apiResponse(null,$validator_array,'422');
         }
 
         //####################  end validation ###########################
@@ -242,7 +263,7 @@ class OrderController extends Controller
             'id'                    =>'required|exists:orders,id',
         ]);
         if ($validator->fails()){
-            return apiResponse('',$validator->errors(),'422');
+            return apiResponse(null,$validator->errors(),'422');
         }
         $data = $request->only('id');
         $data['status'] = 'canceled';

@@ -33,10 +33,10 @@ class AllGuards extends  BaseMiddleware
                 $user = JWTAuth::parseToken()->authenticate();//check authenticated user or not
             }
             catch (TokenExpiredException $e){
-                return apiResponse('','Un authenticated user','422');
+                return apiResponse(null,'Un authenticated user','422');
             }
             catch (JWTException $e){
-                return apiResponse('',$e->getMessage(),'422');
+                return apiResponse(null,$e->getMessage(),'422');
             }
         }
         return $next($request);

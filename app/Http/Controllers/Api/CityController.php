@@ -15,7 +15,7 @@ class CityController extends Controller
             'governorate_id' => 'required',
         ]);
         if ($validator->fails()) {
-            return apiResponse('',$validator->errors(),'422');
+            return apiResponse(null,$validator->errors(),'422');
         }
         $data = City::where('governorate_id',$request->governorate_id)->get();
         return apiResponse($data);

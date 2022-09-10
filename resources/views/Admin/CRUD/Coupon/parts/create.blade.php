@@ -1,4 +1,10 @@
 <!--begin::Form-->
+<link rel="stylesheet" href="{{url('admin')}}/assets/plugins/multipleselect/multiple-select.css">
+<style>
+    .ms-drop .multiple {
+        width: 125px !important;
+    }
+</style>
 <form id="form" enctype="multipart/form-data" method="POST" action="{{route('coupons.store')}}">
     @csrf
     <div class="row mt-0">
@@ -100,43 +106,49 @@
         <!--begin::Input group-->
         <div class="d-flex flex-column mb-2 fv-row col-sm-6 mt-0">
             <label class="d-flex align-items-center fs-6 fw-bold form-label ">
-                <span class="required">اقل سعر  </span>
-                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="اقل سعر "></i>
+                <span class="required">الحد الادنى للفاتورة  </span>
+                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="الحد الادنى للفاتورة "></i>
             </label>
-            <input type="text" class="form-control form-control-solid numbersOnly " placeholder="اقل سعر  " name="min_price" value=""/>
+            <input type="text" class="form-control form-control-solid numbersOnly " placeholder="الحد الادنى للفاتورة  " name="min_price" value=""/>
         </div>
         <!--end::Input group-->
         <!--begin::Input group-->
         <div class="d-flex flex-column mb-2 fv-row col-sm-6 mt-0">
             <label class="d-flex align-items-center fs-6 fw-bold form-label ">
-                <span class="required">اعلى سعر  </span>
-                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="اعلى سعر "></i>
+                <span class="required">الحد الاقصى للخصم  </span>
+                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="الحد الاقصى للخصم "></i>
             </label>
-            <input type="text" class="form-control form-control-solid numbersOnly"  placeholder="اعلى سعر  "  name="max_price" value=""/>
+            <input type="text" class="form-control form-control-solid numbersOnly"  placeholder="الحد الاقصى للخصم  "  name="max_price" value=""/>
         </div>
         <!--end::Input group-->
 
         <div class="d-flex flex-column mb-2 fv-row col-sm-12 mt-3">
             <div class="form-group">
                 <label >المستخدمين</label>
-                <div class="form-group form-elements m-0 my-2">
-                    <div class="custom-controls-stacked ">
-                        <label class="custom-control custom-checkbox ">
-                            <input type="checkbox" class="custom-control-input"  id="checkAll" >
-                            <span class="custom-control-label " style="font-weight: bold"> تحديد الكل </span>
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group form-elements m-0">
-                    <div class="custom-controls-stacked row">
-                        @foreach($users as $user)
-                            <label class="custom-control custom-checkbox " style="width: 25%">
-                                <input type="checkbox" class="custom-control-input" name="users[]" value="{{$user->id}}" >
-                                <span class="custom-control-label">{{$user->name ?? 'ضيف رقم '.$user->id}}</span>
-                            </label>
-                        @endforeach
-                    </div>
-                </div>
+                <select multiple="multiple" name="users[]" class="group-filter my-2">
+                    @foreach($users as $user)
+                        <option value="{{$user->id}}">{{$user->name ?? 'ضيف رقم '.$user->id}}</option>
+                    @endforeach
+                </select>
+
+{{--                <div class="form-group form-elements m-0 my-2">--}}
+{{--                    <div class="custom-controls-stacked ">--}}
+{{--                        <label class="custom-control custom-checkbox ">--}}
+{{--                            <input type="checkbox" class="custom-control-input"  id="checkAll" >--}}
+{{--                            <span class="custom-control-label " style="font-weight: bold"> تحديد الكل </span>--}}
+{{--                        </label>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--                <div class="form-group form-elements m-0">--}}
+{{--                    <div class="custom-controls-stacked row">--}}
+{{--                        @foreach($users as $user)--}}
+{{--                            <label class="custom-control custom-checkbox " style="width: 25%">--}}
+{{--                                <input type="checkbox" class="custom-control-input" name="users[]" value="{{$user->id}}" >--}}
+{{--                                <span class="custom-control-label">{{$user->name ?? 'ضيف رقم '.$user->id}}</span>--}}
+{{--                            </label>--}}
+{{--                        @endforeach--}}
+{{--                    </div>--}}
+{{--                </div>--}}
 
             </div>
         </div>
@@ -171,8 +183,12 @@
     });
 </script>
 
-<script>
-    $("#checkAll").click(function(){
-        $('input:checkbox').not(this).prop('checked', this.checked);
-    });
-</script>
+{{--<script>--}}
+{{--    $("#checkAll").click(function(){--}}
+{{--        $('input:checkbox').not(this).prop('checked', this.checked);--}}
+{{--    });--}}
+{{--</script>--}}
+
+<!-- INTERNAL MULTI SELECT JS -->
+<script src="{{url('admin')}}/assets/plugins/multipleselect/multiple-select.js"></script>
+<script src="{{url('admin')}}/assets/plugins/multipleselect/multi-select.js"></script>

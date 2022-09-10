@@ -13,6 +13,26 @@ class WalletController extends Controller
         $wallet = Wallet::where(['user_id'=>Auth::guard('user_api')->user()->id])
             ->with('order','user.governorate','user.city')
             ->latest()->get();
-        return apiResponse($wallet);
+
+        $collection = collect([]);
+        $wallet->each(function ($item) use ($collection) {
+            $target = $collection->whereBetween('created_at',
+                [date('Y-m-d 00:00:00',strtotime($item->created_at)),date('Y-m-d 24:59:59',strtotime($item->created_at))]);
+            if ($target->count()==0)
+            {
+                $collection->push($item);
+            }
+        });
+        $date = [];
+        foreach ($collection as $walet){
+            $my_wallet = Wallet::where(['user_id'=>Auth::guard('user_api')->user()->id])
+                ->whereDate('created_at',date('Y-m-d',strtotime($walet->created_at)))
+                ->with('order','user.governorate','user.city')
+                ->latest()->get();
+            $date[] = ['date'=>date('Y-m-d',strtotime($walet->created_at)),'wallets'=>$my_wallet];
+
+        }
+
+        return apiResponse($date);
     }
 }

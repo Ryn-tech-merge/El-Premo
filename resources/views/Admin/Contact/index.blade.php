@@ -13,8 +13,9 @@
                             <thead class="bg-primary text-white">
                             <tr>
                                 <th class="text-white">#</th>
+                                <th class="text-white">اسم العميل</th>
                                 <th class="text-white">الهاتف</th>
-                                <th class="text-white">البريد الالكترونى</th>
+{{--                                <th class="text-white">البريد الالكترونى</th>--}}
                                 <th class="text-white">الموضوع</th>
                                 <th class="text-white">الرسالة</th>
                                 <th class="text-white">رد</th>
@@ -68,7 +69,7 @@
 
                     </div>
                     <div class=" ">
-                        <button type="reset" data-dismiss="modal" class="btn btn-light me-3 " style="width: 100px">غلق</button>
+                        <button class="btn btn-light me-3 close_model" style="width: 100px">غلق</button>
                     </div>
                 </div>
             </div>
@@ -84,8 +85,9 @@
     <script>
         var  columns =[
             {data: 'id', name: 'id'},
+            {data: 'user', name: 'user'},
             {data: 'phone', name: 'phone'},
-            {data: 'mail', name: 'mail'},
+            // {data: 'mail', name: 'mail'},
             {data: 'subject', name: 'subject'},
             {data: 'message', name: 'message'},
             {data: 'replay', name: 'replay', orderable: false, searchable: false},

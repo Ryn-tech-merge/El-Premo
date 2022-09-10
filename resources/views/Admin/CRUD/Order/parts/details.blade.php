@@ -47,7 +47,7 @@
     </div>
     <div class="text-center pt-3">
         <div class="d-inline-block pt-3">
-            <button type="reset" data-dismiss="modal" class="btn btn-light me-3 " style="width: 100px">غلق</button>
+            <button class="btn btn-light me-3 close_model" style="width: 100px">غلق</button>
         </div>
     </div>
 </form>

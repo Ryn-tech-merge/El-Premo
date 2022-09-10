@@ -25,7 +25,7 @@ class AuthController extends Controller
                 'phone'=>'required'
             ]);
             if ($validator->fails()){
-                return apiResponse('',$validator->errors(),'422');
+                return apiResponse(null,$validator->errors(),'422');
             }
             $validator = Validator::make($request->all(),[
                 'phone'=>'exists:users,phone'
@@ -93,7 +93,7 @@ class AuthController extends Controller
 
             $user = User::where('id', $user->id)->with('governorate','city')->first();
             $user->token = $token;
-            
+
             return apiResponse($user);
 
         }catch (\Exception $ex){
@@ -149,7 +149,8 @@ class AuthController extends Controller
     //===========================================
     public function profile(Request $request){
         $user = User::where('id',Auth::user()->id)->with('governorate','city')->first();
-        return apiResponse($user,'','422');
+        $user->token = getToken();
+        return apiResponse($user);
     }
     //===========================================
     public function update_profile(Request $request){
@@ -174,6 +175,7 @@ class AuthController extends Controller
             $data = $request->except('image');
         }
         $user->update($data);
+        $user->token = getToken();
 
         return apiResponse($user);
     }

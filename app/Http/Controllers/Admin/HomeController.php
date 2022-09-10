@@ -16,6 +16,7 @@ use App\Models\Offer;
 use App\Models\OrderDetails;
 use App\Models\Governorate;
 use App\Models\Setting;
+use App\Models\Target;
 
 class HomeController extends Controller
 {
@@ -108,6 +109,19 @@ class HomeController extends Controller
 //        return $most_purchase_clients;
         //*************** end most sell client chart ******************
 
+        //*************** start target clients chart ******************
+//        $setting = Setting::first();
+        $target = Target::orderBy('gifts_for')->first();
+        $target_clients  = User::where('points','>=',$target->gifts_for)->orderBy('points','desc')->paginate(10);
+        $most_target_clients = [];
+        foreach ($target_clients as $client){
+            $client_orders = Order::where(['user_id'=>$client->id,'status'=>'ended']);
+                $client->total_purchases = $client_orders->sum('total');
+                $client->target = Target::where('gifts_for','<=',$client->points)->orderBy('gifts_for','desc')->first();
+                $most_target_clients[] = $client;
+        }
+        //*************** end target clients chart ******************
+
         $order_count = Order::where('status','!=','waiting')->whereBetween('created_at',[$created_from,$created_to])->count();
         $user_count = User::whereBetween('created_at',[$created_from,$created_to])->count();
         $admin_count = Admin::whereBetween('created_at',[$created_from,$created_to])->count();
@@ -126,7 +140,7 @@ class HomeController extends Controller
 //        return $date;
         return view('Admin.index',['created_from'=>$created_from,'created_to'=>$created_to],
             compact('chart_day_array','chart_order_array','chart_order_count','total_profit','total_income',
-               'most_sell_products' , 'most_purchase_clients' ,'governorates_array' , 'order_count','user_count','admin_count',
+               'most_target_clients','most_sell_products' , 'most_purchase_clients' ,'governorates_array' , 'order_count','user_count','admin_count',
             'category_count','brand_count','contact_count','product_count','offer_count','new_order_count',
             'on_going_order_count','delivery_order_count','ended_order_count','canceled_order_count'));
     }

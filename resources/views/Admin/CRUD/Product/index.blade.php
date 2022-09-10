@@ -11,7 +11,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">منتجات البريمو</h3>
-                    @if(in_array(34,admin()->user()->permission_ids)) {
+                    @if(in_array(34,admin()->user()->permission_ids))
                     <div class="mr-auto pageheader-btn">
                         <a href="#"  id="addBtn" class="btn btn-primary btn-icon text-white">
                                         <span>
@@ -94,7 +94,7 @@
 
                     </div>
                     <div class=" ">
-                        <button type="reset" data-dismiss="modal" class="btn btn-light me-3 " style="width: 100px">غلق</button>
+                        <button class="btn btn-light me-3 close_model" style="width: 100px">غلق</button>
                     </div>
                 </div>
             </div>

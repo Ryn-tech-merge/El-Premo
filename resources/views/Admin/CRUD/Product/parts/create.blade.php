@@ -155,10 +155,10 @@
         <!--begin::Input group-->
         <div class="d-flex flex-column mb-2 fv-row col-sm-6 mt-0">
             <label class="d-flex align-items-center fs-6 fw-bold form-label ">
-                <span class="required">سعر الشراء</span>
-                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="سعر الشراء  "></i>
+                <span class="required">سعر الشراء ( للوحدة الصغرى )</span>
+                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="سعر الشراء ( للوحدة الصغرى )  "></i>
             </label>
-            <input type="text" class="form-control form-control-solid numbersOnly" readonly placeholder="سعر الشراء " id="purchase_price" name="purchase_price" value=""/>
+            <input type="text" class="form-control form-control-solid numbersOnly"  placeholder="سعر الشراء ( للوحدة الصغرى ) " id="purchase_price" name="purchase_price" value=""/>
         </div>
         <!--end::Input group-->
         <!--begin::Input group-->

@@ -181,7 +181,7 @@ class OrderController extends Controller
                     $wallet = new Wallet ;
                     $wallet->order_id   = $order->id;
                     $wallet->user_id    = $user->id;
-                    $wallet->type       = 'purchases';
+                    $wallet->type       = 'target';
                     $wallet->price      = $target->gifts_price;
                     $wallet->save();
 
@@ -223,7 +223,7 @@ class OrderController extends Controller
         $notification->save();
 
         firebase_notification($notification->title,$notification->message,$order->user_id);
-        
+
         return response()->json(
             [
                 'success' => 'true',

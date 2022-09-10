@@ -293,6 +293,37 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-12 col-sm-12 col-xl-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">عملاء وصلو للاهداف</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table card-table border table-vcenter text-nowrap align-items-center">
+                                <thead class="">
+                                <tr>
+                                    <th>اسم العميل</th>
+                                    <th>اجمالى المشتريات </th>
+                                    <th>الهدف</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($most_target_clients as $client)
+                                    <tr>
+                                        <td>{{$client->name}}</td>
+                                        <td class="font-weight-semibold fs-15">{{$client->total_purchases}}</td>
+                                        <td class="font-weight-semibold fs-15">{{$client->target->gifts_for}}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </div>
     @endif
@@ -617,5 +648,10 @@
 {{--        /*-----Sales-----*/--}}
 
 {{--    </script>--}}
+    <script>
+        $(document).ready(function() {
+            $('.card-options-collapse').click();
+        })
+    </script>
 
 @endpush

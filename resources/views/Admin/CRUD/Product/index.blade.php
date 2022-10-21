@@ -11,38 +11,47 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">منتجات البريمو</h3>
-                    @if(in_array(34,admin()->user()->permission_ids))
                     <div class="mr-auto pageheader-btn">
-                        <a href="#"  id="addBtn" class="btn btn-primary btn-icon text-white">
-                                        <span>
-                                            <i class="fe fe-plus"></i>
-                                        </span> اضافة جديد
-                        </a>
+                        @if(in_array(34,admin()->user()->permission_ids))
+                            <a href="#" id="addBtn" class="btn btn-primary btn-icon text-white">
+                                            <span>
+                                                <i class="fe fe-plus"></i>
+                                            </span> اضافة جديد
+                            </a>
+                        @endif
+                        @if(in_array(33,admin()->user()->permission_ids))
+                            <a href="#" id="multiDeleteBtn" class="btn btn-danger btn-icon text-white">
+                                            <span>
+                                                <i class="fa fa-trash-o"></i>
+                                            </span> حذف المحدد
+                            </a>
+                        @endif
                     </div>
-                    @endif
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="exportexample" class="table table-striped table-responsive-lg  card-table table-vcenter text-nowrap mb-0 table-primary align-items-center mb-0">
                             <thead class="bg-primary text-white">
                             <tr>
-                                <th class="text-white">#</th>
-                                <th class="text-white">الاسم</th>
+                                <th class="text-white"><input type="checkbox" id="master"></th>
+{{--                                <th class="text-white">#</th>--}}
+                                <th class="text-white">اسم المنتج</th>
                                 <th class="text-white">الصورة</th>
-                                <th class="text-white">القسم</th>
-                                <th class="text-white">الشركة</th>
+                                <th class="text-white">القسم الرئيسى</th>
+                                <th class="text-white">القسم الفرعى</th>
                                 <th class="text-white">الكمية</th>
-                                <th class="text-white">الوحدة الصغرى</th>
-                                <th class="text-white">الحد الادنى للوحدة الصغرى</th>
-                                <th class="text-white">الحد الاقصى للوحدة الصغرى</th>
-                                <th class="text-white">الوحدة الكبرى</th>
-                                <th class="text-white">الحد الادنى للوحدة الكبرى</th>
-                                <th class="text-white">الحد الاقصى للوحدة الكبرى</th>
-                                <th class="text-white">سعر الوحدة الصغرى</th>
-                                <th class="text-white">سعر الوحدة الكبرى</th>
-                                <th class="text-white">كمية الوحدة الكبرى من الصغرى</th>
-                                <th class="text-white">سعر الشراء</th>
-                                <th class="text-white">الحالة</th>
+                                <th class="text-white">الكمية الكبرى</th>
+{{--                                <th class="text-white">الوحدة الصغرى</th>--}}
+{{--                                <th class="text-white">الحد الادنى للوحدة الصغرى</th>--}}
+{{--                                <th class="text-white">الحد الاقصى للوحدة الصغرى</th>--}}
+{{--                                <th class="text-white">الوحدة الكبرى</th>--}}
+{{--                                <th class="text-white">الحد الادنى للوحدة الكبرى</th>--}}
+{{--                                <th class="text-white">الحد الاقصى للوحدة الكبرى</th>--}}
+{{--                                <th class="text-white">سعر الوحدة الصغرى</th>--}}
+{{--                                <th class="text-white">سعر الوحدة الكبرى</th>--}}
+{{--                                <th class="text-white">كمية الوحدة الكبرى من الصغرى</th>--}}
+{{--                                <th class="text-white">سعر الشراء</th>--}}
+{{--                                <th class="text-white">الحالة</th>--}}
                                 <th class="text-white">تحكم</th>
                             </tr>
                             </thead>
@@ -109,23 +118,25 @@
 
     <script>
         var  columns =[
-            {data: 'id', name: 'id'},
+            {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
+            // {data: 'id', name: 'id'},
             {data: 'name', name: 'name'},
             {data: 'image', name: 'image'},
             {data: 'category', name: 'category'},
             {data: 'brand', name: 'brand'},
-            {data: 'sm_unit_price', name: 'sm_unit_price'},
-            {data: 'lg_unit_price', name: 'lg_unit_price'},
             {data: 'amount', name: 'amount'},
-            {data: 'sm_unit', name: 'sm_unit'},
-            {data: 'min_sm_amount', name: 'min_sm_amount'},
-            {data: 'max_sm_amount', name: 'max_sm_amount'},
-            {data: 'lg_unit', name: 'lg_unit'},
-            {data: 'min_lg_amount', name: 'min_lg_amount'},
-            {data: 'max_lg_amount', name: 'max_lg_amount'},
-            {data: 'lg_sm_amount', name: 'lg_sm_amount'},
-            {data: 'purchase_price', name: 'purchase_price'},
-            {data: 'is_available', name: 'is_available'},
+            {data: 'lg_amount', name: 'lg_amount'},
+            // {data: 'sm_unit', name: 'sm_unit'},
+            // {data: 'min_sm_amount', name: 'min_sm_amount'},
+            // {data: 'max_sm_amount', name: 'max_sm_amount'},
+            // {data: 'lg_unit', name: 'lg_unit'},
+            // {data: 'min_lg_amount', name: 'min_lg_amount'},
+            // {data: 'max_lg_amount', name: 'max_lg_amount'},
+            // {data: 'lg_sm_amount', name: 'lg_sm_amount'},
+            // {data: 'sm_unit_price', name: 'sm_unit_price'},
+            // {data: 'lg_unit_price', name: 'lg_unit_price'},
+            // {data: 'purchase_price', name: 'purchase_price'},
+            // {data: 'is_available', name: 'is_available'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ];
         //======================== addBtn =============================

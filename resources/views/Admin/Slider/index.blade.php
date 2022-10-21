@@ -6,21 +6,29 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">صور العرض</h3>
-                    @if(in_array(26,admin()->user()->permission_ids))
                     <div class="mr-auto pageheader-btn">
-                        <a href="#"  id="addBtn" class="btn btn-primary btn-icon text-white">
-                                        <span>
-                                            <i class="fe fe-plus"></i>
-                                        </span> اضافة جديد
-                        </a>
+                        @if(in_array(26,admin()->user()->permission_ids))
+                            <a href="#" id="addBtn" class="btn btn-primary btn-icon text-white">
+                                            <span>
+                                                <i class="fe fe-plus"></i>
+                                            </span> اضافة جديد
+                            </a>
+                        @endif
+                        @if(in_array(25,admin()->user()->permission_ids))
+                            <a href="#" id="multiDeleteBtn" class="btn btn-danger btn-icon text-white">
+                                            <span>
+                                                <i class="fa fa-trash-o"></i>
+                                            </span> حذف المحدد
+                            </a>
+                        @endif
                     </div>
-                    @endif
                 </div>
                 <div class="card-body">
                     <div class="{{--table-responsive--}}">
                         <table id="exportexample" class="table table-striped table-responsive-lg  card-table table-vcenter text-nowrap mb-0 table-primary align-items-center mb-0">
                             <thead class="bg-primary text-white">
                             <tr>
+                                <th class="text-white"><input type="checkbox" id="master"></th>
                                 <th class="text-white">#</th>
                                 <th class="text-white">الصورة</th>
                                 <th class="text-white">نوع الصورة</th>
@@ -91,6 +99,7 @@
 
     <script>
         var  columns =[
+            {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
             {data: 'id', name: 'id'},
             {data: 'image', name: 'image'},
             {data: 'type', name: 'type'},

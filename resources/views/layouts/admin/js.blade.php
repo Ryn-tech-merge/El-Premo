@@ -152,6 +152,19 @@
         $('#Modal').modal('hide');
     })
 </script>
+{{--=================== delete all ==============================--}}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#master').on('click', function(e) {
+            if($(this).is(':checked',true))
+            {
+                $(".sub_chk").prop('checked', true);
+            } else {
+                $(".sub_chk").prop('checked',false);
+            }
+        });
+    });
+</script>
 
 
 

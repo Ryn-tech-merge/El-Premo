@@ -1,10 +1,12 @@
+<?php $setting =  App\Models\Setting::first(); ?>
+
 <!-- Header -->
 <div class="app-header header">
     <div class="container-fluid">
         <div class="d-flex">
             <a class="header-brand d-md-none" href="{{url('admin')}}/index">
-                <img src="{{url('admin')}}/assets/images/brand/logo-3.png" class="header-brand-img mobile-icon" alt="logo">
-                <img src="{{url('admin')}}/assets/images/brand/logo.png" class="header-brand-img desktop-logo mobile-logo" alt="logo">
+                <img src="{{get_file($setting->logo)}}" class="header-brand-img mobile-icon" alt="logo">
+                <img src="{{get_file($setting->logo)}}" class="header-brand-img desktop-logo mobile-logo" alt="logo">
             </a>
             <a aria-label="Hide Sidebar" class="app-sidebar__toggle" data-toggle="sidebar" href="#">
                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
@@ -13,11 +15,11 @@
             </a><!-- sidebar-toggle-->
 
             <div class="d-flex mr-auto header-right-icons header-search-icon">
-                <button class="navbar-toggler navresponsive-toggler d-md-none" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-4" aria-controls="navbarSupportedContent-4" aria-expanded="false" aria-label="Toggle navigation">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" class="navbar-toggler-icon">
-                        <path d="M0 0h24v24H0V0z" fill="none" />
-                        <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" /></svg>
-                </button>
+{{--                <button class="navbar-toggler navresponsive-toggler d-md-none" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-4" aria-controls="navbarSupportedContent-4" aria-expanded="false" aria-label="Toggle navigation">--}}
+{{--                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" class="navbar-toggler-icon">--}}
+{{--                        <path d="M0 0h24v24H0V0z" fill="none" />--}}
+{{--                        <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" /></svg>--}}
+{{--                </button>--}}
                 <div class="dropdown d-none d-lg-flex">
                     <a class="nav-link icon full-screen-link nav-link-bg">
                         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" class="fullscreen-button">
@@ -30,7 +32,7 @@
                 <div class="dropdown profile-1">
                     <a href="#" data-toggle="dropdown" class="nav-link pl-2 pr-2  leading-none d-flex">
 									<span>
-										<img src="{{get_file('admin/imgs/logo.jpeg')}}" alt="profile-user" class="avatar  ml-xl-3 profile-user brround cover-image">
+										<img src="{{get_file($setting->logo)}}" alt="profile-user" class="avatar  ml-xl-3 profile-user brround cover-image">
 									</span>
                         <div class="text-center mt-1 d-none d-xl-block">
                             <h6 class="text-dark mb-0 fs-13 font-weight-semibold">{{admin()->user()->name}}</h6>

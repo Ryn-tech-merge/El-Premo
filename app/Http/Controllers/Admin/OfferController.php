@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Traits\NotificationFirebaseTrait;
+use App\Models\Cart;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
@@ -11,10 +14,11 @@ use App\Models\Offer;
 use App\Models\Product;
 use App\Models\OfferProduct;
 use App\Models\Category;
+use App\Models\Slider;
 
 class OfferController extends Controller
 {
-    use PhotoTrait;
+    use PhotoTrait, NotificationFirebaseTrait;
 
     public function index(Request $request)
     {
@@ -23,13 +27,13 @@ class OfferController extends Controller
             return Datatables::of($offers)
                 ->addColumn('action', function ($offer) {
                     $action = '';
-                    if(in_array(36,admin()->user()->permission_ids)) {
+                    if (in_array(36, admin()->user()->permission_ids)) {
                         $action .= '
                         <button  id="editBtn" class="btn btn-default btn-primary btn-sm mb-2  mb-xl-0 "
                              data-id="' . $offer->id . '" ><i class="fa fa-edit text-white"></i>
                         </button>';
                     }
-                    if(in_array(37,admin()->user()->permission_ids)) {
+                    if (in_array(37, admin()->user()->permission_ids)) {
                         $action .= '
                         <button class="btn btn-default btn-danger btn-sm mb-2 mb-xl-0 delete"
                              data-id="' . $offer->id . '" ><i class="fa fa-trash-o text-white"></i>
@@ -38,16 +42,18 @@ class OfferController extends Controller
                     return $action;
 
                 })
-                ->editColumn('image',function ($offer){
-                    return '<img alt="image" class="img list-thumbnail border-0" style="width:100px" onclick="window.open(this.src)" src="'.$offer->image.'">';
+                ->editColumn('image', function ($offer) {
+                    return '<img alt="image" class="img list-thumbnail border-0" style="width:100px" onclick="window.open(this.src)" src="' . $offer->image . '">';
                 })
-                ->editColumn('type',function ($offer){
-                    return $offer->type=='value'?'قيمة':'نسبة';
+                ->editColumn('type', function ($offer) {
+                    return $offer->type == 'value' ? 'قيمة' : 'نسبة';
                 })
-                ->editColumn('is_available',function ($product){
-                    $status = $product->is_available=='yes' ? 'فعال' :'غير فعال' ;
-                    $color = $product->is_available=='yes' ? 'badge-success' :'badge-danger' ;
-                    return '<span class="badge ' . $color . ' " >'.$status.'</a>';
+                ->editColumn('is_available', function ($product) {
+                    $status = $product->is_available == 'yes' ? 'فعال' : 'غير فعال';
+                    $color = $product->is_available == 'yes' ? 'badge-success' : 'badge-danger';
+                    return '<span class="badge ' . $color . ' " >' . $status . '</a>';
+                })->addColumn('checkbox' , function ($product){
+                    return '<input type="checkbox" class="sub_chk" data-id="'.$product->id.'">';
                 })
                 ->escapeColumns([])
                 ->make(true);
@@ -61,7 +67,7 @@ class OfferController extends Controller
     public function create()
     {
         $products = Product::all();
-        return view('Admin.CRUD.Offer.parts.create',compact('products'))->render();
+        return view('Admin.CRUD.Offer.parts.create', compact('products'))->render();
 //        return response()->json('');
     }
 
@@ -88,23 +94,29 @@ class OfferController extends Controller
         if ($valedator->fails())
             return response()->json(['messages' => $valedator->errors()->getMessages(), 'success' => 'false']);
 
-        $data = $request->except('product_id','amount','unit_id');
-        $data['image']    = 'uploads/offer/'.$this->saveImage($request->image,'uploads/offer');
-        $data['amount']    = $request->offer_amount;
+        $data = $request->except('product_id', 'amount', 'unit_id');
+        $data['image'] = 'uploads/offer/' . $this->saveImage($request->image, 'uploads/offer');
+        $data['amount'] = $request->offer_amount;
         unset($data['offer_amount']);
         $offer = Offer::create($data);
-        if (count($request->product_id) > 0){
-            foreach ($request['product_id'] as $key=>$product){
+        if (count($request->product_id) > 0) {
+            foreach ($request['product_id'] as $key => $product) {
 //                return $brand;
                 OfferProduct::create([
-                    'product_id'   => $product,
-                    'offer_id'     => $offer->id,
-                    'amount'       => $request->amount[$key],
-                    'unit_id'       => $request->unit_id[$key]
-                ]) ;
+                    'product_id' => $product,
+                    'offer_id' => $offer->id,
+                    'amount' => $request->amount[$key],
+                    'unit_id' => $request->unit_id[$key]
+                ]);
 
             }
         }
+
+        $ids = User::pluck('id')->toArray();
+        $notification['not_type'] = 'offers';
+        $notification['body'] = $offer->name;
+        $notification['offer_id'] = $offer->id;
+        $this->sendFCMNotification($ids, $notification);
         return response()->json(
             [
                 'success' => 'true',
@@ -112,13 +124,26 @@ class OfferController extends Controller
             ]);
     }
     ###############################################
+    ################ multiple Delete  #################
+    public function multiDelete(Request $request)
+    {
+        $ids = explode(",", $request->ids);
+        Offer::whereIn('id', $ids)->delete();
+        Slider::where(['type'=>'offer'])->whereIn('product_id',$ids)->delete();
+        Cart::whereIn('offer_id', $ids)->delete();
 
+        return response()->json(
+            [
+                'code' => 200,
+                'message' => 'تم الحذف بنجاح'
+            ]);
+    }
 
     ################ Edit offer #################
     public function edit(Offer $offer)
     {
         $products = Product::all();
-        return view('Admin.CRUD.Offer.parts.edit', compact('offer','products'));
+        return view('Admin.CRUD.Offer.parts.edit', compact('offer', 'products'));
     }
     ###############################################
     ################ update offer #################
@@ -142,29 +167,29 @@ class OfferController extends Controller
         if ($valedator->fails())
             return response()->json(['messages' => $valedator->errors()->getMessages(), 'success' => 'false']);
 
-        $data = $request->except('product_id','amount','unit_id');
+        $data = $request->except('product_id', 'amount', 'unit_id');
 
-        if ( $request->image && $request->image != null ){
+        if ($request->image && $request->image != null) {
             if (file_exists($offer->getAttributes()['image'])) {
                 unlink($offer->getAttributes()['image']);
             }
-            $data['image']    = 'uploads/offer/'.$this->saveImage($request->image,'uploads/offer');
+            $data['image'] = 'uploads/offer/' . $this->saveImage($request->image, 'uploads/offer');
 
         }
-        $data['amount']    = $request->offer_amount;
+        $data['amount'] = $request->offer_amount;
         unset($data['offer_amount']);
         $offer->update($data);
 
-        OfferProduct::where('offer_id',$offer->id)->delete();
-        if (count($request->product_id) > 0){
-            foreach ($request['product_id'] as $key=>$product){
-                if ($product != null && $request->amount[$key] != null){
-    //                return $brand;
+        OfferProduct::where('offer_id', $offer->id)->delete();
+        if (count($request->product_id) > 0) {
+            foreach ($request['product_id'] as $key => $product) {
+                if ($product != null && $request->amount[$key] != null) {
+                    //                return $brand;
                     OfferProduct::create([
-                        'product_id'   => $product,
-                        'offer_id'     => $offer->id,
-                        'amount'       => $request->amount[$key],
-                        'unit_id'       => $request->unit_id[$key]
+                        'product_id' => $product,
+                        'offer_id' => $offer->id,
+                        'amount' => $request->amount[$key],
+                        'unit_id' => $request->unit_id[$key]
                     ]);
                 }
             }
@@ -181,6 +206,9 @@ class OfferController extends Controller
     ################ Delete offer #################
     public function destroy(Offer $offer)
     {
+
+        Slider::where(['type'=>'offer','product_id'=>$offer->id])->delete();
+        Cart::where('offer_id', $offer->id)->delete();
         $offer->delete();
         return response()->json(
             [
@@ -194,14 +222,13 @@ class OfferController extends Controller
     public function get_product_units(Request $request)
     {
         $product = Product::where('id', $request->id)->with('sm_unit')->first();
-        if ($product->sm_unit){
+        if ($product->sm_unit) {
             $html = '<option value="" selected disabled>اختر وحدة  ...</option>';
             $html .= '<option value="' . $product->sm_unit->id . '">' . $product->sm_unit->name . '</option>';
-            if ($product->lg_unit){
+            if ($product->lg_unit) {
                 $html .= '<option value="' . $product->lg_unit->id . '">' . $product->lg_unit->name . '</option>';
             }
-        }
-        else{
+        } else {
             $html = '<option value="" selected disabled> لا يوجد وحدات </option>';
         }
 //        return $category;

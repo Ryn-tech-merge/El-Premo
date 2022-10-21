@@ -7,6 +7,15 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title" >عملاء البريمو</h3>
+                    <div class="mr-auto pageheader-btn">
+                        @if(in_array(7,admin()->user()->permission_ids))
+                            <a href="#" id="multiDeleteBtn" class="btn btn-danger btn-icon text-white">
+                                            <span>
+                                                <i class="fa fa-trash-o"></i>
+                                            </span> حذف المحدد
+                            </a>
+                        @endif
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-6">
@@ -62,19 +71,21 @@
                     </div><!-- COL END -->
                 </div>
                 <div class="card-body">
-                    <div class="{{--table-responsive--}}">
+                    <div class="table-responsive">
                         <table id="exportexample" class="table table-striped table-responsive-lg  card-table table-vcenter text-nowrap mb-0 table-primary align-items-center mb-0">
                             <thead class="bg-primary text-white">
                             <tr>
+                                <th class="text-white"><input type="checkbox" id="master"></th>
                                 <th class="text-white">#</th>
                                 <th class="text-white">الاسم</th>
                                 <th class="text-white">رقم الهاتف</th>
 {{--                                <th class="text-white">العنوان</th>--}}
                                 <th class="text-white">المحافظة </th>
                                 <th class="text-white">المدينة </th>
-                                <th class="text-white">الصورة </th>
+{{--                                <th class="text-white">الصورة </th>--}}
 {{--                                <th class="text-white">اسم المحل</th>--}}
 {{--                                <th class="text-white">عنوان المحل</th>--}}
+                                <th class="text-white"> المبيعات</th>
                                 <th class="text-white">المحفظة</th>
                                 <th class="text-white">الحالة</th>
                                 <th class="text-white">حظر</th>
@@ -97,15 +108,17 @@
 @push('admin_js')
     <script>
         var  columns =[
+            {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
             {data: 'id', name: 'id'},
             {data: 'name', name: 'name'},
             {data: 'phone', name: 'phone'},
             // {data: 'address', name: 'address'},
             {data: 'governorate', name: 'governorate'},
             {data: 'city', name: 'city'},
-            {data: 'image', name: 'image'},
+            // {data: 'image', name: 'image'},
             // {data: 'shop_name', name: 'shop_name'},
             // {data: 'shop_address', name: 'shop_address'},
+            {data: 'points', name: 'points'},
             {data: 'wallet', name: 'wallet'},
             {data: 'is_active', name: 'is_active'},
             {data: 'block', name: 'block'},

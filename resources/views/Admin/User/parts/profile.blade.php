@@ -47,11 +47,19 @@
                     </div>
 
 
-                    <div class="media mb-0 mt-0">
+                    <div class="media mb-5 mt-0">
                         <div class="d-flex ml-3"><span class="user-contact-icon bg-danger"><i
                                     class="fa fa-money text-white"></i></span></div>
                         <div class="media-body"><a class="text-dark">المحفظة</a>
                             <div class="text-muted fs-14">{{$user->wallet}}</div>
+                        </div>
+                    </div>
+
+                    <div class="media mb-0 mt-0">
+                        <div class="d-flex ml-3"><span class="user-contact-icon bg-success"><i
+                                    class="fa fa-shopping-cart text-white"></i></span></div>
+                        <div class="media-body"><a class="text-dark">اجمالى المبيعات</a>
+                            <div class="text-muted fs-14">{{$user->points}}</div>
                         </div>
                     </div>
                 </div>
@@ -114,11 +122,17 @@
                                             <div class="d-flex card-body media-xs overflow-visible ">
                                                 <div class="media-body valign-middle mt-1">
                                                     <a href="" class=" font-weight-semibold text-dark">
-                                                        {{$wallet->type=='purchases'?'بعد طلب رقم  ' . $wallet->order_id ?? '' :''}}</a>
+                                                        {{$wallet->type!='register' ?'بعد طلب رقم  ' . $wallet->order_id ?? '' :''}}</a>
                                                     <p class="text-muted mb-0">{{$wallet->price}}</p>
                                                 </div>
                                                 <div class="media-body valign-middle text-left overflow-visible mt-2">
-                                                    <button class="btn btn-light btn-sm" type="button">{{$wallet->type=='purchases'?'طلب' : 'تسجيل دخول'}}</button>
+                                                    <button class="btn btn-light btn-sm" type="button">
+                                                        @if($wallet->type=='purchases') طلب
+                                                        @elseif($wallet->type=='target') تحقيق هدف
+                                                        @else تسجيل دخول
+                                                        @endif
+                                                    </button>
+                                                    <p class="text-muted mb-0 ml-2">{{date('Y-m-d',strtotime($wallet->created_at))}}</p>
                                                 </div>
                                             </div>
                                         </div>

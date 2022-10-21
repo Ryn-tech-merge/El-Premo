@@ -43,6 +43,8 @@ class CategoryController extends Controller
                 })
                 ->editColumn('image',function ($category){
                     return '<img alt="image" class="img list-thumbnail border-0" style="width:100px" onclick="window.open(this.src)" src="'.$category->image.'">';
+                })->addColumn('checkbox' , function ($category){
+                    return '<input type="checkbox" class="sub_chk" data-id="'.$category->id.'">';
                 })
                 ->escapeColumns([])
                 ->make(true);
@@ -154,7 +156,20 @@ class CategoryController extends Controller
                 'message' => 'تم التعديل بنجاح '
             ]);
     }
-    ###############################################
+
+    ################ multiple Delete  #################
+    public function multiDelete(Request $request)
+    {
+        $ids = explode(",", $request->ids);
+        Category::whereIn('id', $ids)->delete();
+
+        return response()->json(
+            [
+                'code' => 200,
+                'message' => 'تم الحذف بنجاح'
+            ]);
+    }
+
 
     ################ Delete category #################
     public function destroy(Category $category)

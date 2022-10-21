@@ -13,9 +13,9 @@ use App\Models\User;
 class TargetController extends Controller
 {
     public function targets(){
-        $wallet = Wallet::where(['user_id'=>Auth::guard('user_api')->user()->id,'type'=>'purchases'])->first();
-        if (!$wallet)
-            return apiResponse(null,'purchase first please');
+//        $wallet = Wallet::where(['user_id'=>Auth::guard('user_api')->user()->id,'type'=>'purchases'])->first();
+//        if (!$wallet)
+//            return apiResponse(null,'purchase first please',202);
 
         $user = User::where('id',Auth::guard('user_api')->user()->id)->with('governorate','city')->first();
         $targets = Target::orderBy('gifts_for')->get();

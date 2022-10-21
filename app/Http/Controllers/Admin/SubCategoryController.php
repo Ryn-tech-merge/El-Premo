@@ -9,6 +9,7 @@ use Yajra\DataTables\DataTables;
 use App\Http\Traits\PhotoTrait;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Slider;
 
 class SubCategoryController extends Controller
 {
@@ -39,8 +40,9 @@ class SubCategoryController extends Controller
 
                 ->editColumn('image',function ($sub_category){
                     return '<img alt="image" class="img list-thumbnail border-0" style="width:100px" onclick="window.open(this.src)" src="'.$sub_category->image.'">';
-                })
-//                ->addColumn('category',function ($sub_category){
+                })->addColumn('checkbox' , function ($sub_category){
+                    return '<input type="checkbox" class="sub_chk" data-id="'.$sub_category->id.'">';
+                })//                ->addColumn('category',function ($sub_category){
 //                    return $sub_category->category->name ?? 'قسم محذوف';
 //                })
                 ->escapeColumns([])
@@ -131,10 +133,23 @@ class SubCategoryController extends Controller
             ]);
     }
     ###############################################
+    ################ multiple Delete  #################
+    public function multiDelete(Request $request)
+    {
+        $ids = explode(",", $request->ids);
+        Slider::where(['type'=>'brand'])->whereIn('product_id',$ids)->delete();
+        Brand::whereIn('id', $ids)->delete();
 
+        return response()->json(
+            [
+                'code' => 200,
+                'message' => 'تم الحذف بنجاح'
+            ]);
+    }
     ################ Delete sub_category #################
     public function destroy(Brand $sub_category)
     {
+        Slider::where(['type'=>'brand','product_id'=>$sub_category->id])->delete();
         $sub_category->delete();
         return response()->json(
             [

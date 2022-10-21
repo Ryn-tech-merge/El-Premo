@@ -25,6 +25,8 @@ class CouponController extends Controller
                 $query3->where('user_id',Auth::guard('user_api')->user()->id)->where('is_paid','no');
             })
             ->get();
+//        $coupon_users = CouponUsers::where(['user_id'=>Auth::guard('user_api')->user()->id])
+//            ->whereIn('coupon_id',$coupon_ids)->get();
 
             return apiResponse($coupons);
 

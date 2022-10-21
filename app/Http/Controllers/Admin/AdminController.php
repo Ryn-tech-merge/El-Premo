@@ -33,7 +33,10 @@ class AdminController extends Controller
                         </button>';
                     }
                 return $action;
+                })->addColumn('checkbox' , function ($admin){
+                    return '<input type="checkbox" class="sub_chk" data-id="'.$admin->id.'">';
                 })
+                ->escapeColumns([])
                 ->make(true);
         }
 
@@ -149,6 +152,18 @@ class AdminController extends Controller
                 'message' => 'تم الحذف بنجاح'
             ]);
     }
+    ################ Delete Admin #################
+    public function multiDelete(Request $request)
+    {
+        $ids = explode(",", $request->ids);
+        Admin::whereIn('id', $ids)->delete();
+
+        return response()->json(
+            [
+                'code' => 200,
+                'message' => 'تم الحذف بنجاح'
+            ]);
+    }
 
     ###############################################
 
@@ -158,7 +173,6 @@ class AdminController extends Controller
         $valedator = Validator::make($request->all(), [
             'email' => 'required | unique:admins,email,' . admin()->user()->id,
             'name' => 'required',
-//            'password'=>  'required',
         ],
             [
                 'name.required' => 'الاسم مطلوب',
@@ -171,6 +185,21 @@ class AdminController extends Controller
         if ($valedator->fails())
             return response()->json(['messages' => $valedator->errors()->getMessages(), 'success' => 'false']);
 
+        if (isset($request->password) && $request->password != null){
+            $valedator = Validator::make($request->all(), [
+                'password' => 'required_with:confirm_password|same:confirm_password',
+                'confirm_password' => 'required'
+            ],
+                [
+                    'password.required_with'=> ' كلمة المرور مطلوبة',
+                    'password.same'=> 'كلمة المرور و تاكيد كلمة المرور غير متطابقين ',
+                    'confirm_password.required'=> 'تاكيد كلمة المرور مطلوب',
+                ]
+            );
+            if ($valedator->fails())
+                return response()->json(['messages' => $valedator->errors()->getMessages(), 'success' => 'false']);
+
+        }
         $update = Admin::find(\admin()->user()->id);
         $update->name = $request->name;
         $update->email = $request->email;

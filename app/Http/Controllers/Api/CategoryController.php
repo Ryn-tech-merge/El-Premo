@@ -73,7 +73,7 @@ class CategoryController extends Controller
     //###############################################################//
     public function one_product(Request $request){
         $validator = Validator::make($request->all(),[
-            'id'=>'required',
+            'id'=>'required:exists:products',
         ]);
         if ($validator->fails()){
             return apiResponse(null,$validator->errors(),'422');

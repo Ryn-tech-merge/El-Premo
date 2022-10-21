@@ -9,6 +9,16 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">الطلبات</h3>
+                    <div class="mr-auto pageheader-btn">
+                        @if(in_array(40,admin()->user()->permission_ids))
+                            <a href="#"  id="multiDeleteBtn" class="btn btn-danger btn-icon text-white">
+                                            <span>
+                                                <i class="fa fa-trash-o"></i>
+                                            </span> حذف المحدد
+                            </a>
+                        @endif
+                    </div>
+
                     <!-- ROW-6 OPEN -->
                     <!-- ROW-6 CLOSED -->
 {{--                    <form id="filter_form" name="filter_form">--}}
@@ -112,13 +122,14 @@
                         <table id="exportexample" class="table table-striped table-responsive-lg  card-table table-vcenter text-nowrap mb-0 table-primary align-items-center mb-0">
                             <thead class="bg-primary text-white">
                             <tr>
+                                <th class="text-white"><input type="checkbox" id="master"></th>
                                 <th class="text-white">#</th>
                                 <th class="text-white">المستخدم</th>
                                 <th class="text-white">تاريخ التوصيل</th>
                                 <th class="text-white">السعر</th>
                                 <th class="text-white">الخصم</th>
-                                <th class="text-white">الاجمالى</th>
-                                <th class="text-white">السعر من المحفظة</th>
+{{--                                <th class="text-white">الاجمالى</th>--}}
+                                <th class="text-white"> المحفظة</th>
                                 <th class="text-white">السعر كاش</th>
                                 <th class="text-white">الحالة</th>
                                 <th class="text-white">التفاصيل</th>
@@ -189,12 +200,13 @@
 
     <script>
         var  columns =[
+            {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
             {data: 'id', name: 'id'},
             {data: 'user', name: 'user'},
             {data: 'delivery_date', name: 'delivery_date'},
             {data: 'price', name: 'price'},
             {data: 'discount', name: 'discount'},
-            {data: 'total', name: 'total'},
+            // {data: 'total', name: 'total'},
             {data: 'wallet_paid', name: 'wallet_paid'},
             {data: 'cash_paid', name: 'cash_paid'},
             {data: 'status', name: 'status'},

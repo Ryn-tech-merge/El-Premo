@@ -31,6 +31,8 @@ class UnitController extends Controller
                     }
                    return $action;
 
+                })->addColumn('checkbox' , function ($unit){
+                    return '<input type="checkbox" class="sub_chk" data-id="'.$unit->id.'">';
                 })
                 ->escapeColumns([])
                 ->make(true);
@@ -101,7 +103,18 @@ class UnitController extends Controller
             ]);
     }
     ###############################################
+    ################ multiple Delete  #################
+    public function multiDelete(Request $request)
+    {
+        $ids = explode(",", $request->ids);
+        Unit::whereIn('id', $ids)->delete();
 
+        return response()->json(
+            [
+                'code' => 200,
+                'message' => 'تم الحذف بنجاح'
+            ]);
+    }
     ################ Delete Unit #################
     public function destroy(Unit $unit)
     {

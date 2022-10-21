@@ -44,15 +44,17 @@ Route::get('accept_order_schedule','OrderController@accept_order_schedule');
 /* ---------------------- setting -------------------*/
 Route::get('setting','SettingController@setting');
 
+Route::post('logout','AuthController@logout');
 
 Route::group(['middleware'=>'all_guards:user_api'],function(){
     Route::post('insert_token','AuthController@insert_token');
-    Route::post('logout','AuthController@logout');
     Route::get('profile','AuthController@profile');
     Route::post('update_profile','AuthController@update_profile');
 
     /* ---------------------- notifications -------------------*/
     Route::get('notifications','NotificationController@notifications');
+    Route::get('getNotificationsCount','NotificationController@getNotificationsCount');
+    Route::POST('deleteNotifications','NotificationController@deleteNotifications');
     /* ---------------------- coupon -------------------*/
     Route::get('coupon','CouponController@coupon');
     Route::get('current_coupons','CouponController@current_coupons');
@@ -80,8 +82,9 @@ Route::group(['middleware'=>'all_guards:user_api'],function(){
     Route::post('update_cart','CartController@update_cart');
     Route::post('delete_cart','CartController@delete_cart');
 
-
 });
+
+Route::get('sendFCMNotification','HomeController@sendFCMNotification');
 
 
 

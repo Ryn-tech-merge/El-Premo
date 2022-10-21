@@ -37,6 +37,8 @@ class ContactController extends Controller
                 ->addColumn('user', function ($contact) {
                     if (!$contact->user) return '';
                     return '<a href="'.url("admin/user_profile",$contact->user->id).'" class="text-bold cursor-pointer" >'.$contact->user->name ?? $contact->user->id . " ضيف رقم  " .'</a>';
+                })->addColumn('checkbox' , function ($contact){
+                    return '<input type="checkbox" class="sub_chk" data-id="'.$contact->id.'">';
                 })
                 ->escapeColumns([])
                 ->make(true);
@@ -45,6 +47,18 @@ class ContactController extends Controller
         return view('Admin.Contact.index');
     }
 
+    ################ multiple Delete  #################
+    public function multiDelete(Request $request)
+    {
+        $ids = explode(",", $request->ids);
+        Contact::whereIn('id', $ids)->delete();
+
+        return response()->json(
+            [
+                'code' => 200,
+                'message' => 'تم الحذف بنجاح'
+            ]);
+    }
 
     ################ Delete Contact #################
     public function destroy(Contact $contact)

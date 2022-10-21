@@ -40,6 +40,8 @@ class CouponController extends Controller
                 })
                 ->editColumn('type',function ($coupon){
                     return $coupon->type=='value'?'قيمة':'نسبة';
+                })->addColumn('checkbox' , function ($coupon){
+                    return '<input type="checkbox" class="sub_chk" data-id="'.$coupon->id.'">';
                 })
                 ->escapeColumns([])
                 ->make(true);
@@ -61,13 +63,13 @@ class CouponController extends Controller
         $valedator = Validator::make($request->all(), [
             'code' => 'required',
             'type' => 'required',
-            'min_price' => 'required',
-            'max_price' => 'required'
+//            'min_price' => 'required',
+//            'max_price' => 'required'
         ],
             [
                 'code.required' => 'الكود مطلوب',
-                'min_price.required' => 'اقل سعر مطلوب',
-                'max_price.required' => 'اعلى سعر مطلوب',
+//                'min_price.required' => 'اقل سعر مطلوب',
+//                'max_price.required' => 'اعلى سعر مطلوب',
                 'type.required' => ' النوع مطلوب'
             ]
         );
@@ -110,13 +112,13 @@ class CouponController extends Controller
         $valedator = Validator::make($request->all(), [
             'code' => 'required',
             'type' => 'required',
-            'min_price' => 'required',
-            'max_price' => 'required'
+//            'min_price' => 'required',
+//            'max_price' => 'required'
         ],
             [
                 'code.required' => 'الكود مطلوب',
-                'min_price.required' => 'اقل سعر مطلوب',
-                'max_price.required' => 'اعلى سعر مطلوب',
+//                'min_price.required' => 'اقل سعر مطلوب',
+//                'max_price.required' => 'اعلى سعر مطلوب',
                 'type.required' => ' النوع مطلوب'
             ]
         );
@@ -156,7 +158,18 @@ class CouponController extends Controller
                 'message' => 'تم الحذف بنجاح'
             ]);
     }
+    ################ multiple Delete  #################
+    public function multiDelete(Request $request)
+    {
+        $ids = explode(",", $request->ids);
+        Coupon::whereIn('id', $ids)->delete();
 
+        return response()->json(
+            [
+                'code' => 200,
+                'message' => 'تم الحذف بنجاح'
+            ]);
+    }
     ##############################################
 
 }

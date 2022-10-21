@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Traits\NotificationFirebaseTrait;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Governorate;
@@ -15,6 +16,8 @@ use Yajra\DataTables\DataTables;
 
 class UserController extends Controller
 {
+    use NotificationFirebaseTrait;
+
     public function index(Request $request)
     {
         if ($request->ajax()){
@@ -62,6 +65,8 @@ class UserController extends Controller
                 })
                 ->addColumn('city',function ($user){
                     return $user->city->name ?? '';
+                })->addColumn('checkbox' , function ($user){
+                    return '<input type="checkbox" class="sub_chk" data-id="'.$user->id.'">';
                 })
                 ->escapeColumns([])
                 ->make(true);
@@ -69,7 +74,18 @@ class UserController extends Controller
         $governorates = Governorate::all();
         return view('Admin.User.index',compact('governorates'));
     }
+    ################ multiple Delete  #################
+    public function multiDelete(Request $request)
+    {
+        $ids = explode(",", $request->ids);
+        User::whereIn('id', $ids)->delete();
 
+        return response()->json(
+            [
+                'code' => 200,
+                'message' => 'تم الحذف بنجاح'
+            ]);
+    }
     ################ Delete user #################
     public function destroy(User $user)
     {
@@ -98,6 +114,14 @@ class UserController extends Controller
         $user = User::where('id',$id)->first();
         $text = $user->is_active == "yes" ? "تم الغاء التفعيل بنجاح" :"تم التفعيل بنجاح";
         $user->update(['is_active'=>$user->is_active=='yes'?'no':'yes']);
+
+
+        if ($user->is_active== 'yes')
+        {
+            $notificationData['not_type'] = 'activeAccount';
+            $this->sendFCMNotification([$id], $notificationData);
+        }
+
         return response()->json(
             [
                 'success' => 'true',

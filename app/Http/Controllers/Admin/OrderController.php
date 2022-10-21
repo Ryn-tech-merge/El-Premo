@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Traits\NotificationFirebaseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
@@ -15,53 +16,52 @@ use App\Models\Notification;
 
 class OrderController extends Controller
 {
-    public function orderStatus($order_status){
-        if ($order_status == 'waiting'){
+    use NotificationFirebaseTrait;
+
+    public function orderStatus($order_status)
+    {
+        if ($order_status == 'waiting') {
             $status = 'تحت الطلب';
             $color = 'secondary';
-        }
-        elseif ($order_status == 'on_going'){
+        } elseif ($order_status == 'on_going') {
             $status = 'جارى التحضير';
             $color = 'primary';
-        }
-        elseif ($order_status == 'delivery'){
+        } elseif ($order_status == 'delivery') {
             $status = 'جارى التوصيل';
             $color = 'primary';
-        }
-        elseif ($order_status==='ended'){
-            $status = 'منتهى' ;
+        } elseif ($order_status === 'ended') {
+            $status = 'منتهى';
             $color = 'success';
-        }
-        elseif ($order_status=== 'canceled'){
-            $status = 'تم الالغاء' ;
+        } elseif ($order_status === 'canceled') {
+            $status = 'تم الالغاء';
             $color = 'warning';
-        }
-        else{
-            $status = 'جديد' ;
+        } else {
+            $status = 'جديد';
             $color = 'info';
         }
 
-        return ['status'=>$status,'color'=>$color];
+        return ['status' => $status, 'color' => $color];
     }
+
 //#################################################################
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $created_from = $request->created_from ? date('Y-m-d',strtotime($request->created_from)):date('1970-1-1');
-            $created_to = $request->created_to ?date('Y-m-d' ,strtotime($request->created_to)):date('Y-m-d' , strtotime('+1 week'));
-            $delivery_from = $request->delivery_from ? date('Y-m-d',strtotime($request->delivery_from)):date('1970-1-1');
-            $delivery_to = $request->delivery_to ? date('Y-m-d' ,strtotime($request->delivery_to)):date('Y-m-d',strtotime('+1 week'));
-            $status =  $request->status!=null? [$request->status]:['waiting','new','on_going','delivery','ended','canceled'];
-            $status = $request->status=='all' ? ['waiting','new','on_going','delivery','ended','canceled'] :$status;
+            $created_from = $request->created_from ? date('Y-m-d', strtotime($request->created_from)) : date('1970-1-1');
+            $created_to = $request->created_to ? date('Y-m-d', strtotime($request->created_to)) : date('Y-m-d', strtotime('+1 week'));
+            $delivery_from = $request->delivery_from ? date('Y-m-d', strtotime($request->delivery_from)) : date('1970-1-1');
+            $delivery_to = $request->delivery_to ? date('Y-m-d', strtotime($request->delivery_to)) : date('Y-m-d', strtotime('+1 week'));
+            $status = $request->status != null ? [$request->status] : ['waiting', 'new', 'on_going', 'delivery', 'ended', 'canceled'];
+            $status = $request->status == 'all' ? ['waiting', 'new', 'on_going', 'delivery', 'ended', 'canceled'] : $status;
 //            return $status;
             $orders = Order::with('user')
-                ->whereIn('status',$status)
-                ->whereBetween('created_at',[$created_from,$created_to])
-                ->whereBetween('delivery_date',[$delivery_from,$delivery_to])
+                ->whereIn('status', $status)
+                ->whereBetween('created_at', [$created_from, $created_to])
+                ->whereBetween('delivery_date', [$delivery_from, $delivery_to])
                 ->latest()->get();
             return Datatables::of($orders)
                 ->addColumn('action', function ($order) {
-                    if(in_array(40,admin()->user()->permission_ids)) {
+                    if (in_array(40, admin()->user()->permission_ids)) {
                         return '
                             <button class="btn btn-default btn-danger btn-sm mb-2 mb-xl-0 delete"
                                  data-id="' . $order->id . '" ><i class="fa fa-trash-o text-white"></i>
@@ -70,35 +70,49 @@ class OrderController extends Controller
                     }
 
                 })
-                ->editColumn('status',function ($order){
-                    $order_status =  $this->orderStatus($order->status);
+                ->editColumn('status', function ($order) {
+                    $order_status = $this->orderStatus($order->status);
 //                    $button = '';
 //                    if ($order->status != 'ended' && $order->status != 'canceled' ) {
-                        $statusBtn =in_array(41,admin()->user()->permission_ids)? "statusBtn" : " ";
-                        $button = '<div class="card-options pr-2">
-                                    <a class="btn btn-sm '. $statusBtn .'" style="background-color: #0ea5b9;color: white" href="'.route("change_order_status",$order->id).'"><i class="fa fa-pencil mb-0"></i></a>
+                    $statusBtn = in_array(41, admin()->user()->permission_ids) ? "statusBtn" : " ";
+                    $button = '<div class="card-options pr-2">
+                                    <a class="btn btn-sm ' . $statusBtn . '" style="background-color: #0ea5b9;color: white" href="' . route("change_order_status", $order->id) . '"><i class="fa fa-pencil mb-0"></i></a>
                                 </div>';
 //                    }
                     return '
                             <div class="card-header pt-0  pb-0 border-bottom-0">
-                            <a  class="badge badge-'. $order_status['color'] .' text-white ">'. $order_status['status']  .'</a>
-                                '.$button.'
+                            <a  class="badge badge-' . $order_status['color'] . ' text-white ">' . $order_status['status'] . '</a>
+                                ' . $button . '
                             </div>
 							';
                 })
-                ->addColumn('details',function ($order){
+                ->addColumn('details', function ($order) {
                     return '<div class="card-options pr-2">
-                                    <a class="btn btn-sm btn-primary text-white statusBtn"  href="' .route("order_details",$order->id).'"><i class="fa fa-book mb-0"></i></a>
+                                    <a class="btn btn-sm btn-primary text-white statusBtn"  href="' . route("order_details", $order->id) . '"><i class="fa fa-book mb-0"></i></a>
                            </div>';
                 })
-                ->addColumn('user',function ($order){
-                    return $order->user->name ?? 'مستخدم محذوف' ;
+                ->addColumn('user', function ($order) {
+                    return $order->user->name ?? 'مستخدم محذوف';
+                })->addColumn('checkbox' , function ($order){
+                    return '<input type="checkbox" class="sub_chk" data-id="'.$order->id.'">';
                 })
                 ->escapeColumns([])
                 ->make(true);
         }
 
         return view('Admin.CRUD.Order.index');
+    }
+    ################ multiple Delete  #################
+    public function multiDelete(Request $request)
+    {
+        $ids = explode(",", $request->ids);
+        Order::whereIn('id', $ids)->delete();
+
+        return response()->json(
+            [
+                'code' => 200,
+                'message' => 'تم الحذف بنجاح'
+            ]);
     }
 
 
@@ -116,96 +130,101 @@ class OrderController extends Controller
     ################ change_order_status #################
     public function change_order_status($id)
     {
-        $order = Order::where('id',$id)->first();
-        return view('Admin.CRUD.Order.parts.status',compact('order'))->render();
+        $order = Order::where('id', $id)->first();
+        return view('Admin.CRUD.Order.parts.status', compact('order'))->render();
     }
+
     ################ change_order_status #################
     public function update_order_status(Request $request)
     {
-        $order = Order::where('id',$request->id)->first();
-        if ($order->status == 'ended' && $request->status != 'ended'){
-            $user           = $order->user;
-            $wallets = Wallet::where('user_id',$user->id)->where('order_id',$order->id)->get();
+        $order = Order::where('id', $request->id)->first();
+        if ($order->status == 'ended' && $request->status != 'ended') {
+            $user = $order->user;
+            $wallets = Wallet::where('user_id', $user->id)->where('order_id', $order->id)->get();
             foreach ($wallets as $wallet) {
-                $user->wallet -= $wallet->price ;
+                $user->wallet -= $wallet->price;
                 $wallet->delete();
             }
-            $user->points   -= $order->total; //total purchases
-            $user->wallet   += $order->wallet_paid; //money paid from wallet
+            $user->points -= $order->total; //total purchases
+            $user->wallet += $order->wallet_paid; //money paid from wallet
             $user->save();
         }
 
-        $order->update(['status'=>$request->status]);
+        $order->update(['status' => $request->status]);
 
-        if ($order->status == 'ended'){
-        // Wallet
+        if ($order->status == 'ended') {
+            // Wallet
 //            $setting        = Setting::first();
-            $user           = $order->user;
-            $user->points   += $order->total; //total purchases
+            $user = $order->user;
+            $old_points_amount = $order->user->points;
+            $user->points += $order->total; //total purchases
             $user->save();
 
-            if ($user->wallet >= $order->total){
+            if ($user->wallet >= $order->total) {
                 $order->wallet_paid = $order->total;
-                $order->cash_paid   = 0;
+                $order->cash_paid = 0;
                 $order->save();
                 $user->wallet -= $order->total;
                 $user->save();
 
-                $wallet = new Wallet ;
-                $wallet->order_id   = $order->id;
-                $wallet->user_id    = $user->id;
-                $wallet->type       = 'purchases';
-                $wallet->price      = -$order->total;
+                $wallet = new Wallet;
+                $wallet->order_id = $order->id;
+                $wallet->user_id = $user->id;
+                $wallet->type = 'purchases';
+                $wallet->price = -$order->total;
                 $wallet->save();
-            }else{
+            } else {
+                if ($user->wallet > 0) {
+                    $wallet = new Wallet;
+                    $wallet->order_id = $order->id;
+                    $wallet->user_id = $user->id;
+                    $wallet->type = 'purchases';
+                    $wallet->price = -$user->wallet;
+                    $wallet->save();
+                }
+
                 $order->wallet_paid = $user->wallet;
                 $order->cash_paid = $order->total - $user->wallet;
                 $order->save();
                 $user->wallet = 0;
                 $user->save();
 
-                if ($user->wallet > 0){
-                    $wallet = new Wallet ;
-                    $wallet->order_id   = $order->id;
-                    $wallet->user_id    = $user->id;
-                    $wallet->type       = 'purchases';
-                    $wallet->price      = -$user->wallet;
-                    $wallet->save();
-                }
             }
 
-            $wallet_money = Wallet::where('user_id',$user->id)->sum('price');
-            $targets = Target::where('gifts_for','>',$wallet_money)->orderBy('gifts_for')->get();
-            foreach ($targets as $target){
-                if ($target->gifts_price <= $user->points){
-                    $wallet = new Wallet ;
-                    $wallet->order_id   = $order->id;
-                    $wallet->user_id    = $user->id;
-                    $wallet->type       = 'target';
-                    $wallet->price      = $target->gifts_price;
+//            $wallet_money = Wallet::where('user_id', $user->id)->sum('price');
+            $targets = Target::where('gifts_for', '>', $old_points_amount)
+                ->where('gifts_for', '<', $user->points)
+                ->orderBy('gifts_for')->get();
+            foreach ($targets as $target) {
+//                if ($target->gifts_price <= $user->points) {
+                    $wallet = new Wallet;
+                    $wallet->order_id = $order->id;
+                    $wallet->user_id = $user->id;
+                    $wallet->type = 'target';
+                    $wallet->price = $target->gifts_price;
                     $wallet->save();
 
-                    $user->wallet   +=  $target->gifts_price;
+                    $user->wallet += $target->gifts_price;
                     $user->save();
-                }
+//                }
             }
 
 
-        //end Wallet
+            //end Wallet
         }
 
-        if ($order->status == 'canceled'){
+        if ($order->status == 'canceled') {
 
-            foreach ($order->order_details as $detail){
-                $detail = OrderDetails::where(['order_id'=>$order->id,'product_id'=>$detail['product_id'],'unit_id' =>$detail['unit_id'],'type' =>$detail['type'] ])->first();
+            foreach ($order->order_details as $detail) {
+                $detail = OrderDetails::where(['order_id' => $order->id, 'product_id' => $detail['product_id'], 'unit_id' => $detail['unit_id'], 'type' => $detail['type']])->first();
 
                 if ($detail['type'] == 'product') {
                     $new_amount = 0;
                     if ($detail['unit_id'] == $detail->product->sm_unit_id) {
                         $new_amount = $detail->product->amount + $detail['amount'];
                     }
-                    if($detail['unit_id'] == $detail->product->lg_unit_id ) {
-                        $unit_amount = $detail->product->lg_sm_amount * $detail['amount'] ;
+                    if ($detail['unit_id'] == $detail->product->lg_unit_id) {
+                        $unit_amount = $detail->product->lg_sm_amount * $detail['amount'];
                         $new_amount = $detail->product->amount + $unit_amount;
                     }
                     $detail->product->update(['amount' => $new_amount]);
@@ -216,13 +235,19 @@ class OrderController extends Controller
 
         }
 
-        $notification = new Notification ;
+        $notification = new Notification;
         $notification->user_id = $order->user_id;
         $notification->title = 'تم تغيير حالة طلبك';
         $notification->message = 'طلبك رقم ' . $order->id . ' ' . $this->orderStatus($order->status)['status'];
         $notification->save();
 
-        firebase_notification($notification->title,$notification->message,$order->user_id);
+        if (in_array($request->status, ['on_going', 'delivery', 'ended'])) {
+            $notificationData['status'] = $request->status;
+            $notificationData['order_id'] = $order->id;
+            $notificationData['not_type'] = 'orders';
+            $this->sendFCMNotification([$order->user_id], $notificationData);
+        }
+//        firebase_notification($notification->title,$notification->message,$order->user_id);
 
         return response()->json(
             [
@@ -236,7 +261,7 @@ class OrderController extends Controller
     ################ order_details #################
     public function order_details($id)
     {
-        $order = Order::with('order_details')->where('id',$id)->first();
-        return view('Admin.CRUD.Order.parts.details',compact('order'))->render();
+        $order = Order::with('order_details')->where('id', $id)->first();
+        return view('Admin.CRUD.Order.parts.details', compact('order'))->render();
     }
 }

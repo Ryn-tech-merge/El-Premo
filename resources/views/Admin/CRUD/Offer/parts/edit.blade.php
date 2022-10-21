@@ -31,13 +31,13 @@
             <!--end::Label-->
             <div class="d-flex align-items-center mb-3">
                 <div class="form-check m-0 ">
-                    <input class="form-check-input " type="radio" name="type" value="value" {{$offer->type == 'value' ? 'checked' :'' }} >
+                    <input class="form-check-input type price_change" type="radio" name="type" value="value" {{$offer->type == 'value' ? 'checked' :'' }} >
                     <label class="form-check-label ms-5" style="margin-right: 20px;">
                         قيمة
                     </label>
                 </div>
                 <div class="form-check m-0  ms-3" style="margin-right: 30px!important">
-                    <input class="form-check-input " type="radio" name="type" value="percentage" {{$offer->type == 'percentage' ? 'checked' :'' }}>
+                    <input class="form-check-input type price_change" type="radio" name="type" value="percentage" {{$offer->type == 'percentage' ? 'checked' :'' }}>
                     <label class="form-check-label ms-5" style="margin-right: 20px;">
                         نسبة
                     </label>

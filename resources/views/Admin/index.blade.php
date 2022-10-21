@@ -43,7 +43,7 @@
             </div><!-- COL END -->
 
         <div class="row">
-            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+            <a href="{{in_array(1,admin()->user()->permission_ids) ? route('admins.index') : '#'}}" class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
                 <div class="card bg-primary img-card box-primary-shadow">
                     <div class="card-body">
                         <div class="d-flex">
@@ -55,8 +55,8 @@
                         </div>
                     </div>
                 </div>
-            </div><!-- COL END -->
-            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+            </a><!-- COL END -->
+            <a href="{{in_array(5,admin()->user()->permission_ids) ? route('users.index') : '#'}}" class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
                 <div class="card bg-blue img-card box-primary-shadow">
                     <div class="card-body">
                         <div class="d-flex">
@@ -68,9 +68,9 @@
                         </div>
                     </div>
                 </div>
-            </div><!-- COL END -->
+            </a><!-- COL END -->
 
-            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+            <a href="{{in_array(39,admin()->user()->permission_ids) ? route('orders.index') : '#'}}" class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
                 <div class="card bg-info img-card box-info-shadow">
                     <div class="card-body">
                         <div class="d-flex">
@@ -82,8 +82,8 @@
                         </div>
                     </div>
                 </div>
-            </div><!-- COL END -->
-            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+            </a><!-- COL END -->
+            <a href="{{in_array(19,admin()->user()->permission_ids) ? route('contacts.index') : '#'}}" class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
                 <div class="card bg-warning img-card box-primary-shadow">
                     <div class="card-body">
                         <div class="d-flex">
@@ -95,9 +95,9 @@
                         </div>
                     </div>
                 </div>
-            </div><!-- COL END -->
+            </a><!-- COL END -->
 
-            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+            <a href="{{in_array(35,admin()->user()->permission_ids) ? route('offers.index') : '#'}}" class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
                 <div class="card bg-secondary img-card box-secondary-shadow">
                     <div class="card-body">
                         <div class="d-flex">
@@ -109,8 +109,8 @@
                         </div>
                     </div>
                 </div>
-            </div><!-- COL END -->
-            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+            </a><!-- COL END -->
+            <a href="{{in_array(31,admin()->user()->permission_ids) ? route('products.index') : '#'}}" class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
                 <div class="card  bg-success img-card box-success-shadow">
                     <div class="card-body">
                         <div class="d-flex">
@@ -122,8 +122,9 @@
                         </div>
                     </div>
                 </div>
-            </div><!-- COL END -->
-            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+            </a><!-- COL END -->
+
+            <a href="{{in_array(11,admin()->user()->permission_ids) ? route('categories.index') : '#'}}" class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
                 <div class="card  bg-green img-card box-success-shadow">
                     <div class="card-body">
                         <div class="d-flex">
@@ -135,9 +136,9 @@
                         </div>
                     </div>
                 </div>
-            </div><!-- COL END -->
+            </a><!-- COL END -->
 
-            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+            <a href="{{in_array(15,admin()->user()->permission_ids) ? route('sub_categories.index') : '#'}}" class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
                 <div class="card  bg-info img-card box-success-shadow">
                     <div class="card-body">
                         <div class="d-flex">
@@ -149,7 +150,7 @@
                         </div>
                     </div>
                 </div>
-            </div><!-- COL END -->
+            </a><!-- COL END -->
         </div>
         <!-- ROW -->
 

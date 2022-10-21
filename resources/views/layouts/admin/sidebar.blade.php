@@ -1,18 +1,20 @@
+<?php $setting =  App\Models\Setting::first(); ?>
+
 <!--APP-SIDEBAR-->
 <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
 <aside class="app-sidebar">
     <div class="side-header">
         <a class="header-brand1" href="{{url('admin')}}/index">
-            <img src="{{get_file('admin/imgs/logo.jpeg')}}" class="header-brand-img desktop-logo" alt="logo">
-            <img src="{{get_file('admin/imgs/logo.jpeg')}}" class="header-brand-img toggle-logo" alt="logo">
-            <img src="{{get_file('admin/imgs/logo.jpeg')}}" class="header-brand-img light-logo" alt="logo">
-            <img src="{{get_file('admin/imgs/logo.jpeg')}}" class="header-brand-img light-logo1" alt="logo">
+            <img src="{{get_file($setting->logo)}}" class="header-brand-img desktop-logo" alt="logo">
+            <img src="{{get_file($setting->logo)}}" class="header-brand-img toggle-logo" alt="logo">
+            <img src="{{get_file($setting->logo)}}" class="header-brand-img light-logo" alt="logo">
+            <img src="{{get_file($setting->logo)}}" class="header-brand-img light-logo1" alt="logo">
         </a><!-- LOGO -->
     </div>
     <ul class="side-menu">
 {{--        <li><h3>الرئيسية</h3></li>--}}
         <li class="slide">
-            <a class="side-menu__item" href="src="{{get_file('admin/imgs/logo.jpeg')}}"">
+            <a class="side-menu__item" href="src="{{get_file($setting->logo)}}"">
             <i class="fe fe-home  side-menu__icon"></i>
             <span class="side-menu__label">الرئيسية</span>
             </a>
@@ -94,6 +96,20 @@
                             d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/>
                     </svg>
                     <span class="side-menu__label">المنتجات</span>
+                </a>
+            </li>
+        @endif
+        @if(in_array(32,admin()->user()->permission_ids))
+            <li class="slide">
+                <a class="side-menu__item" href="{{route('edit_products_amount')}}">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"
+                         class="side-menu__icon">
+                        <path d="M0 0h24v24H0V0z" fill="none"/>
+                        <path d="M5 5v14h14V5H5zm4 12H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" opacity=".3"/>
+                        <path
+                            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/>
+                    </svg>
+                    <span class="side-menu__label">تعديل كميات المنتجات</span>
                 </a>
             </li>
         @endif

@@ -104,21 +104,21 @@
         </div>
         <!--end::Input group-->
         <!--begin::Input group-->
-        <div class="d-flex flex-column mb-2 fv-row col-sm-6 mt-0">
+        <div class=" mb-2 fv-row col-sm-12 mt-0" id="min_div" style="{{$coupon->type == 'percentage'?'display: none':''}}">
             <label class="d-flex align-items-center fs-6 fw-bold form-label ">
-                <span class="required">اقل سعر  </span>
-                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="اقل سعر "></i>
+                <span>الحد الادنى للفاتورة  </span>
+{{--                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="اقل سعر "></i>--}}
             </label>
-            <input type="text" class="form-control form-control-solid numbersOnly " placeholder="اقل سعر  " name="min_price" value="{{$coupon->min_price}}"/>
+            <input type="text" class="form-control form-control-solid numbersOnly " placeholder="الحد الادنى للفاتورة  " name="min_price" value="{{$coupon->min_price}}"/>
         </div>
         <!--end::Input group-->
         <!--begin::Input group-->
-        <div class="d-flex flex-column mb-2 fv-row col-sm-6 mt-0">
+        <div class=" mb-2 fv-row col-sm-12 mt-0" id="max_div" style="{{$coupon->type == 'value'?'display: none':''}}">
             <label class="d-flex align-items-center fs-6 fw-bold form-label ">
-                <span class="required">اعلى سعر  </span>
-                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="اعلى سعر "></i>
+                <span>الحد الاقصى للخصم  </span>
+{{--                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="اعلى سعر "></i>--}}
             </label>
-            <input type="text" class="form-control form-control-solid numbersOnly"  placeholder="اعلى سعر  "  name="max_price" value="{{$coupon->max_price}}"/>
+            <input type="text" class="form-control form-control-solid numbersOnly"  placeholder="الحد الاقصى للخصم  "  name="max_price" value="{{$coupon->max_price}}"/>
         </div>
         <!--end::Input group-->
 
@@ -165,9 +165,15 @@
         if(type == 'value'){
             $('#value_div').show()
             $('#percentage_div').hide()
+
+            $('#min_div').show()
+            $('#max_div').hide()
         }else {
             $('#percentage_div').show()
             $('#value_div').hide()
+
+            $('#min_div').hide()
+            $('#max_div').show()
         }
 
     });

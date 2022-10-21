@@ -108,4 +108,47 @@ trait  ProductTrait
         }
         return $products;
     }
+
+    //******************************* fun for count of $offer ***************************************
+
+    function get_offer_count($offer)
+    {
+
+        $offer->count = 0;
+        
+        ////check authenticated user or not
+        $token = null;
+        if (request()->header('auth_token') && request()->header('auth_token') != null)
+            $token = request()->header('auth_token');
+        elseif (request()->get('auth_token') && request()->get('auth_token') != null)
+            $token = request()->get('auth_token');
+        elseif (request()->auth_token && request()->auth_token != null)
+            $token = request()->auth_token;
+
+        if ($token == null){
+            if (request()->header('Authorization') && request()->header('Authorization') != null)
+                $token = request()->header('Authorization');
+            elseif (request()->get('Authorization') && request()->get('Authorization') != null)
+                $token = request()->get('Authorization');
+            elseif (request()->Authorization && request()->Authorization != null)
+                $token = request()->Authorization;
+        }
+        ////end check authenticated user or not
+
+        if ($token) {
+            $user = \Tymon\JWTAuth\Facades\JWTAuth::setToken($token)->toUser();
+            // add count of offer in cart
+            $cart_count = Cart::where(['type' => 'offer','user_id' => $user->id, 'offer_id' => $offer->id])
+                ->first();
+
+            if ($cart_count) $offer->count = $cart_count->amount;
+
+            // end add count of offer in cart
+//            dd($product);
+            return $offer;
+        } else {
+            return $offer;
+        }
+    }
+
 }

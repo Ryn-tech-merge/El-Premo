@@ -10,6 +10,8 @@ use App\Http\Traits\PhotoTrait;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Unit;
+use App\Models\Slider;
+use App\Models\Cart;
 
 class ProductController extends Controller
 {
@@ -52,10 +54,15 @@ class ProductController extends Controller
                 ->addColumn('lg_unit',function ($product){
                     return $product->lg_unit->name??'';
                 })
+                ->addColumn('lg_amount',function ($product){
+                    return $product->amount / $product->lg_sm_amount;
+                })
                 ->editColumn('is_available',function ($product){
                     $status = $product->is_available=='yes' ? 'فعال' :'غير فعال' ;
                     $color = $product->is_available=='yes' ? 'badge-success' :'badge-danger' ;
                     return '<span class="badge ' . $color . ' " >'.$status.'</a>';
+                })->addColumn('checkbox' , function ($product){
+                    return '<input type="checkbox" class="sub_chk" data-id="'.$product->id.'">';
                 })
                 ->escapeColumns([])
                 ->make(true);
@@ -76,7 +83,7 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-//        return count($request->brands) > 0;
+//        return $request;
         $valedator = Validator::make($request->all(), [
             'name' => 'required',
             'image' => 'required',
@@ -88,7 +95,8 @@ class ProductController extends Controller
             'sm_unit_price' => 'required',
             'lg_sm_amount' => 'required',
             'lg_amount' => 'required',
-        ],
+            'purchase_price' => 'required',
+            ],
             [
                 'name.required' => 'الاسم مطلوب',
                 'image.required' => ' الصورة مطلوبة',
@@ -100,13 +108,15 @@ class ProductController extends Controller
                 'sm_unit_price.required' => ' سعر الوحدة الصغرى مطلوب',
                 'lg_sm_amount.required' => 'كمية الوحدة الكبرى من الصغرى مطلوبة',
                 'lg_amount.required' => ' الكمية الكبرى مطلوبة',
-            ]
+                  'purchase_price.required' => ' سعر الشراء مطلوب ',
+                ]
         );
         if ($valedator->fails())
             return response()->json(['messages' => $valedator->errors()->getMessages(), 'success' => 'false']);
 
-        $data = $request->except('lg_amount');
+        $data = $request->except('lg_amount','buy_lg_unit');
         $data['image']    = 'uploads/product/'.$this->saveImage($request->image,'uploads/product');
+        $data['buy_lg_unit'] = $request->buy_lg_unit == 'on' ?'yes':'no';
         $product = Product::create($data);
 //        return $product;
 
@@ -142,6 +152,7 @@ class ProductController extends Controller
             'sm_unit_price' => 'required',
             'lg_sm_amount' => 'required',
             'lg_amount' => 'required',
+            'purchase_price' => 'required',
         ],
             [
                 'name.required' => 'الاسم مطلوب',
@@ -154,12 +165,14 @@ class ProductController extends Controller
                 'sm_unit_price.required' => ' سعر الوحدة الصغرى مطلوب',
                 'lg_sm_amount.required' => 'كمية الوحدة الكبرى من الصغرى مطلوبة',
                 'lg_amount.required' => ' الكمية الكبرى مطلوبة',
+                'purchase_price.required' => ' سعر الشراء مطلوب ',
             ]
         );
         if ($valedator->fails())
             return response()->json(['messages' => $valedator->errors()->getMessages(), 'success' => 'false']);
 
-        $data = $request->except('lg_amount');
+        $data = $request->except('lg_amount','buy_lg_unit');
+        $data['buy_lg_unit'] = $request->buy_lg_unit == 'on' ?'yes':'no';
 
         if ( $request->image && $request->image != null ){
             if (file_exists($product->getAttributes()['image'])) {
@@ -177,10 +190,25 @@ class ProductController extends Controller
             ]);
     }
     ###############################################
+    ################ multiple Delete  #################
+    public function multiDelete(Request $request)
+    {
+        $ids = explode(",", $request->ids);
+        Slider::where(['type'=>'product'])->whereIn('product_id',$ids)->delete();
+        Cart::whereIn('product_id',$ids)->delete();
+        Product::whereIn('id', $ids)->delete();
 
+        return response()->json(
+            [
+                'code' => 200,
+                'message' => 'تم الحذف بنجاح'
+            ]);
+    }
     ################ Delete product #################
     public function destroy(Product $product)
     {
+        Slider::where(['type'=>'product','product_id'=>$product->id])->delete();
+        Cart::where('product_id',$product->id)->delete();
         $product->delete();
         return response()->json(
             [
@@ -212,4 +240,17 @@ class ProductController extends Controller
     }
 
     ##############################################
+    public function edit_products_amount(){
+        $products = Product::where('is_available','yes')->get();
+        return view('Admin.CRUD.Product.parts.edit_amount',compact('products'));
+    }
+    ##############################################
+    public function update_products_amount(Request $request){
+        $products = Product::whereIn('id',$request->product_ids)->get();
+        foreach ($products as $key=>$product){
+            $product->amount = $request['amount'][$key] ;
+            $product->save() ;
+        }
+        return response()->json(['messages' => ['تم تعديل كميات المنتجات بنجاح'], 'success' => 'true']);
+    }
 }

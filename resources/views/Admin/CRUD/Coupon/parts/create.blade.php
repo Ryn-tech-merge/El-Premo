@@ -104,19 +104,19 @@
         </div>
         <!--end::Input group-->
         <!--begin::Input group-->
-        <div class="d-flex flex-column mb-2 fv-row col-sm-6 mt-0">
+        <div class=" mb-2 fv-row col-sm-12 mt-0" id="min_div">
             <label class="d-flex align-items-center fs-6 fw-bold form-label ">
-                <span class="required">الحد الادنى للفاتورة  </span>
-                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="الحد الادنى للفاتورة "></i>
+                <span >الحد الادنى للفاتورة  </span>
+{{--                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="الحد الادنى للفاتورة "></i>--}}
             </label>
             <input type="text" class="form-control form-control-solid numbersOnly " placeholder="الحد الادنى للفاتورة  " name="min_price" value=""/>
         </div>
         <!--end::Input group-->
         <!--begin::Input group-->
-        <div class="d-flex flex-column mb-2 fv-row col-sm-6 mt-0">
+        <div class=" mb-2 fv-row col-sm-12 mt-0" id="max_div" style="display: none">
             <label class="d-flex align-items-center fs-6 fw-bold form-label ">
-                <span class="required">الحد الاقصى للخصم  </span>
-                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="الحد الاقصى للخصم "></i>
+                <span >الحد الاقصى للخصم  </span>
+{{--                <i class="fa fa-exclamation-circle ms-2 fs-7 text-primary " title="الحد الاقصى للخصم "></i>--}}
             </label>
             <input type="text" class="form-control form-control-solid numbersOnly"  placeholder="الحد الاقصى للخصم  "  name="max_price" value=""/>
         </div>
@@ -174,10 +174,16 @@
             $('#price').val(old_price - value)
             $('#value_div').show()
             $('#percentage_div').hide()
+
+            $('#min_div').show()
+            $('#max_div').hide()
         }else {
             $('#price').val( ( (100-percentage) / 100 ) * old_price )
             $('#percentage_div').show()
             $('#value_div').hide()
+
+            $('#min_div').hide()
+            $('#max_div').show()
         }
 
     });

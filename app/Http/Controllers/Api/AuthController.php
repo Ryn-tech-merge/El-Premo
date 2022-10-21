@@ -82,7 +82,7 @@ class AuthController extends Controller
 
             // Wallet
             $setting = Setting::first();
-            $user->points += $setting->register_gift;
+            $user->wallet += $setting->register_gift;
             $user->save();
             $wallet = new Wallet ;
             $wallet->user_id  = Auth::guard('user_api')->user()->id;
@@ -129,8 +129,14 @@ class AuthController extends Controller
             'token' => 'required',
         ]);
         if ($validator->fails()) {
-            return apiResponse(null,$validator->errors(),'422');
+//            return apiResponse(null,$validator->errors(),'422');
         }
+
+        if (!Auth::guard('user_api')->check())
+        {
+            return apiResponse(null,'done');
+        }
+
         PhoneToken::where(['user_id' => Auth::guard('user_api')->user()->id, 'phone_token' => $request->token])->delete();
 
         $token = getToken();
@@ -139,11 +145,11 @@ class AuthController extends Controller
                 JWTAuth::setToken($token)->invalidate(); // logout user
                 return apiResponse(null,'logout done');
             }catch(TokenInvalidException $e){
-                return apiResponse(null,'some thing went wrong','422');
+                return apiResponse(null,'done');
             }
         }
         else{
-            return apiResponse(null,'some thing went wrong','422');
+            return apiResponse(null,'done');
         }
     }
     //===========================================

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
@@ -32,12 +33,22 @@ class OrderController extends Controller
             'total'                 =>'required',
             "details"               => "required|array|min:1",
             "details.*.type"        => "required",
-            "details.*.unit_id"     => "required",
+            "details.*.unit_id"     => "nullable",
             "details.*.product_id"  => "required",
             "details.*.amount"      => "required",
         ]);
         if ($validator->fails()){
             return apiResponse(null,$validator->errors(),'422');
+        }
+
+        foreach ($request->details as $detail)
+        {
+            $searchInCart = Cart::where("{$detail['type']}_id",$detail['product_id'])
+                ->where(['user_id'=>Auth::guard('user_api')->user()->id])->count();
+            if ($searchInCart == 0)
+            {
+                return apiResponse(null,"",423);
+            }
         }
 
         //####################  end validation ###########################
@@ -50,6 +61,9 @@ class OrderController extends Controller
             //####################  amount validation ###########################
             foreach ($request->details as $key=>$detail) {
                 if ($detail['type'] == 'product') {
+                    if (!$detail['unit_id']){
+                        return apiResponse(null,['unit'=>['unit id required']],'422');
+                    }
                     $product = Product::where('id', $detail['product_id'])->first();
                     //*************** stock validation ###########################
                     if ($product->amount < $product->max_sm_amount){
@@ -88,7 +102,7 @@ class OrderController extends Controller
             }
 
             if ($validator_array != []){
-                return apiResponse(null,$validator_array,'422');
+                return apiResponse(null,$validator_array,406 );
             }
             //####################  end amount validation ###########################
         $data = [];
@@ -97,21 +111,32 @@ class OrderController extends Controller
             $data['total'] = $order->total + $request->total;
             $data['coupon_id'] = $request->coupon_id;
             $data['discount'] = $order->discount + $request->discount;
+
             CouponUser::where(['coupon_id'=>$request->coupon_id,'user_id'=>Auth::guard('user_api')->user()->id])->update(['is_paid'=>'yes']);
+            if ($order->wallet_paid)
+            {
+                $user = $order->user;
+                $user->wallet += $order->wallet_paid;
+                $user->save();
+            }
 
             $order->update($data);
+
         }else{
             $data = $request->only('coupon_id','price','total','discount');
             $setting = Setting::first();
             $data['delivery_date'] = date('Y-m-d ' ,strtotime('+'.$setting->delivery_days.'day') ) ;
             $data['user_id'] = Auth::guard('user_api')->user()->id ;
+
             CouponUser::where(['coupon_id'=>$request->coupon_id,'user_id'=>Auth::guard('user_api')->user()->id])->update(['is_paid'=>'yes']);
 
+            $data['count_orders'] = Order::where('status','!=','canceled')
+                ->where('user_id',Auth::guard('user_api')->user()->id)->count()+1;
             $order = Order::create($data);
         }
 
         foreach ($request->details as $detail){
-            $new_detail = OrderDetails::where(['order_id'=>$order->id,'product_id'=>$detail['product_id'],'unit_id' =>$detail['unit_id'],'type' =>$detail['type'] ])->first();
+            $new_detail = OrderDetails::where(['order_id'=>$order->id,'product_id'=>$detail['product_id'],'unit_id' =>$detail['unit_id']??null,'type' =>$detail['type'] ])->first();
             if ($new_detail){
                 $new_detail->update(['amount'=> $new_detail->amount + $detail['amount'] ]);
             }else{
@@ -120,7 +145,7 @@ class OrderController extends Controller
                 $new_detail->product_id     = $detail['product_id'];
                 $new_detail->amount         = $detail['amount'];
                 $new_detail->type           = $detail['type'];
-                $new_detail->unit_id        = $detail['unit_id'];
+                $new_detail->unit_id        = $detail['unit_id']??null;
                 $new_detail->save();
             }
 
@@ -140,6 +165,24 @@ class OrderController extends Controller
         }
         Cart::where('user_id',Auth::guard('user_api')->user()->id)->delete();
         $order = Order::where('id',$order->id)->with('order_details.product','order_details.offer','order_details.unit','user.governorate','user.city')->first();
+
+            $user = User::find($order->user_id);
+            if ($user->wallet)
+            {
+                $total = $order->price - $order->discount;
+                if ($user->wallet > $total)
+                {
+                    $order->wallet_paid = $total;
+                    $order->cash_paid = 0;
+                    $user->wallet -=$total;
+                }else{
+                    $order->wallet_paid = $user->wallet;
+                    $order->cash_paid = $total - $user->wallet;
+                    $user->wallet = 0;
+                }
+            }
+            $order->save();
+            $user->save();
 
         return apiResponse($order);
     }
@@ -265,11 +308,25 @@ class OrderController extends Controller
         if ($validator->fails()){
             return apiResponse(null,$validator->errors(),'422');
         }
+
+
+
+
+
         $data = $request->only('id');
         $data['status'] = 'canceled';
         $order =  Order::where('id',$request->id)
             ->with('order_details.product','order_details.offer','order_details.unit','user.governorate','user.city')
             ->first();
+
+        if ($order->status == 'canceled')
+        {
+            return apiResponse(null,'already canceled',406);
+        }
+
+
+
+
         $order->update($data);
 
         foreach ($order->order_details as $detail){
@@ -290,6 +347,19 @@ class OrderController extends Controller
             }
         }
 
+
+        if($order->wallet_paid)
+        {
+            $user = User::find($order->user_id);
+            $user->wallet += $order->wallet_paid??0;
+            $user->save();
+        }
+        $data['price'] = 0;
+        $data['discount'] = 0;
+        $data['total'] = 0;
+        $data['wallet_paid'] = 0;
+        $data['cash_paid'] = 0;
+        $order->update($data);
         return apiResponse($order);
     }
     /*================================================*/
@@ -297,6 +367,7 @@ class OrderController extends Controller
         $setting = Setting::first();
         if (date('H' ,strtotime('+2hours') ) == date('H' ,strtotime($setting->order_time))){
             Order::where('status','waiting')->update(['status'=>'new']);
+
             return apiResponse(null,'done successfully');
         }
         return apiResponse(null,'date does not come yet');

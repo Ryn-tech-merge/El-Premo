@@ -298,8 +298,8 @@ if (!function_exists('phone_codes')) {
     }
     //===================  apiResponse ===========================
     if (!function_exists('apiResponse')) {
-        function apiResponse($data = '',$message = '',$code = '200',$status = '200') {
-            return response()->json(['data'=>$data,'message'=>$message,'code'=>$code],$status);
+        function apiResponse($data = '',$message = '',$code = 200,$status = '200') {
+            return response()->json(['data'=>$data,'message'=>$message,'code'=>intval($code)],$status);
         }
     }
     //===================  paginateResponse ===========================

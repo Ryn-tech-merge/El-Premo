@@ -21,6 +21,7 @@ use App\Models\Target;
 class HomeController extends Controller
 {
     public function index(Request $request){
+
         $created_from = $request->created_from ? date('Y-m-d',strtotime($request->created_from)):date('Y-m-d' , strtotime('-1 month'));
         $created_to = $request->created_to ?date('Y-m-d' ,strtotime($request->created_to)):date('Y-m-d' );
 
@@ -61,7 +62,7 @@ class HomeController extends Controller
         //*************** end governorate chart ******************
 
         //*************** start most sell products chart ******************
-        $products = OrderDetails::where('type','product')
+        $products = OrderDetails::where('type','product')->whereHas('product')
             ->with('product.category','product.brand','product.sm_unit','product.lg_unit')->get();
         $collection = collect([]);
         $products->each(function ($item) use ($collection) {

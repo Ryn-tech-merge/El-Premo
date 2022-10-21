@@ -30,6 +30,8 @@ class TargetController extends Controller
                         </button>';
                     }
                     return $action;
+                })->addColumn('checkbox' , function ($target){
+                    return '<input type="checkbox" class="sub_chk" data-id="'.$target->id.'">';
                 })
                 ->escapeColumns([])
                 ->make(true);
@@ -104,7 +106,18 @@ class TargetController extends Controller
             ]);
     }
     ###############################################
+    ################ multiple Delete  #################
+    public function multiDelete(Request $request)
+    {
+        $ids = explode(",", $request->ids);
+        Target::whereIn('id', $ids)->delete();
 
+        return response()->json(
+            [
+                'code' => 200,
+                'message' => 'تم الحذف بنجاح'
+            ]);
+    }
     ################ Delete Target #################
     public function destroy(Target $target)
     {

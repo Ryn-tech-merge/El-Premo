@@ -209,6 +209,83 @@
         });
     });
 
+
+    $(document).on('click', '#multiDeleteBtn', function () {
+        var allVals = [];
+        $(".sub_chk:checked").each(function() {
+            allVals.push($(this).attr('data-id'));
+        });
+        if(allVals.length <=0)
+        {
+            my_toaster("يجب تحديد المراد حذفه",'warning')
+        }
+        else {
+            swal.fire({
+                title: "هل أنت متأكد من الحذف؟",
+                text: "لا يمكنك التراجع بعد ذلك؟",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "موافق",
+                cancelButtonText: "الغاء",
+                okButtonText: "موافق",
+                closeOnConfirm: false
+            }).then((result) => {
+                if (!result.isConfirmed){
+                    return true;
+                }
+                var url = '{{ route("$url.multiDelete") }}';
+                var ids = allVals.join(",");
+                // console.log(url);
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {'ids': ids},
+                    beforeSend: function () {
+                        $('#global-loader').show()
+                    },
+                    success: function (data) {
+
+                        window.setTimeout(function () {
+                            $('#global-loader').hide()
+                            if (data.code == 200) {
+                                my_toaster(data.message, 'info')
+                                $('#exportexample').DataTable().ajax.reload(null, false);
+                            } else {
+                                my_toaster("هناك خطأ", 'error')
+                            }
+
+                        }, 100);
+                    }, error: function (data) {
+                        $('#global-loader').hide()
+
+                        if (data.status === 500) {
+                            my_toaster("هناك خطأ", 'error')
+                        }
+
+
+                        if (data.status === 422) {
+                            var errors = $.parseJSON(data.responseText);
+
+                            $.each(errors, function (key, value) {
+                                if ($.isPlainObject(value)) {
+                                    $.each(value, function (key, value) {
+                                        my_toaster(value, 'error')
+                                    });
+
+                                } else {
+
+                                }
+                            });
+                        }
+                    }
+
+                });
+            });
+        }
+
+    });
+
     $(document).on('click', '#editBtn', function () {
         var  id = $(this).data('id');
         $('#form-load').html(loader)
